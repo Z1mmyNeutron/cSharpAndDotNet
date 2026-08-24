@@ -1,0 +1,16 @@
+﻿Console.WriteLine("Interactive Console Calculator");
+Console.WriteLine();
+Console.Write("Enter the first number: ");
+double firstNumber = Convert.ToDouble(Console.ReadLine());
+Console.Write("Enter the second number: ");
+double secondNumber = Convert.ToDouble(Console.ReadLine());
+double sum = firstNumber + secondNumber;
+double difference = firstNumber - secondNumber;
+double product = firstNumber * secondNumber;
+double quotient = firstNumber / secondNumber;
+Console.WriteLine();
+Console.WriteLine("Calculation Results");
+Console.WriteLine($"Addition: {sum:F2}");
+Console.WriteLine($"Subtraction: {difference:F2}");
+Console.WriteLine($"Multiplication: {product:F2}");
+Console.WriteLine($"Division: {quotient:F2}");
