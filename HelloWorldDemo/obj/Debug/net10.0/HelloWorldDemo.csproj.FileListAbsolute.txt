@@ -12,3 +12,4 @@
 /Users/christinazimmer/Downloads/C# Programming Foundations/Module 1/HelloWorldDemo/obj/Debug/net10.0/HelloWorldDemo.pdb
 /Users/christinazimmer/Downloads/C# Programming Foundations/Module 1/HelloWorldDemo/obj/Debug/net10.0/HelloWorldDemo.genruntimeconfig.cache
 /Users/christinazimmer/Downloads/C# Programming Foundations/Module 1/HelloWorldDemo/obj/Debug/net10.0/ref/HelloWorldDemo.dll
+/Users/christinazimmer/Downloads/C# Programming Foundations/Module 1/HelloWorldDemo/obj/Debug/net10.0/HelloWorldDemo.sourcelink.json

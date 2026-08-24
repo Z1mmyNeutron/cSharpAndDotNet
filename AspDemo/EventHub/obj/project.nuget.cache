@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0zSSH60tbBc=",
+  "success": true,
+  "projectFilePath": "/Users/christinazimmer/Downloads/C# Programming Foundations/Module 1/AspDemo/EventHub/EventHub.csproj",
+  "expectedPackageFiles": [
+    "/Users/christinazimmer/.nuget/packages/microsoft.aspnetcore.openapi/10.0.11/microsoft.aspnetcore.openapi.10.0.11.nupkg.sha512",
+    "/Users/christinazimmer/.nuget/packages/microsoft.openapi/2.7.5/microsoft.openapi.2.7.5.nupkg.sha512"
+  ],
+  "logs": []
+}
