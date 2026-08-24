@@ -13,3 +13,13 @@ double product = firstNumber * secondNumber;
 double quotient = firstNumber / secondNumber;
 
 Console.WriteLine($"\n Calculation Results: \n Addition: {sum:F2} \n Subtraction: {difference:F2} \n Multiplication: {product:F2} \n Division: {quotient:F2}");
+
+Console.Write("\n Enter an Expense Amount: ");
+string? input = Console.ReadLine();
+
+if (decimal.TryParse(input, out decimal amount)){
+    Console.WriteLine($"You entered: {amount:F2}.");
+
+}else{
+    Console.WriteLine("That wasn't a valid number.");
+}
