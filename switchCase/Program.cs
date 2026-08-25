@@ -5,19 +5,19 @@
 // string studentName = "Christina";
 // Console.WriteLine($"hello {studentName}");
 
-string day = "Monday";
+// string day = "Monday";
 
-switch(day){
-    case "Monday":
-        Console.WriteLine("Start of the Week");
-        break;
-    case "Friday":
-        Console.WriteLine("End of the Week");
-        break;
-    default:
-        Console.WriteLine("Regular Day");
-        break;
-}
+// switch(day){
+//     case "Monday":
+//         Console.WriteLine("Start of the Week");
+//         break;
+//     case "Friday":
+//         Console.WriteLine("End of the Week");
+//         break;
+//     default:
+//         Console.WriteLine("Regular Day");
+//         break;
+// }
 string role = "Admin";
 
 //switch expression
@@ -79,3 +79,16 @@ if(age >= 18){
 }else{
     Console.WriteLine("You are not eligible to vote.");
 }
+
+//more compact way to write switch logic
+
+Console.Write("Enter a number(1-3)");
+int day = Convert.ToInt32(Console.ReadLine());
+
+string dayName = day switch{
+    1 => "Monday",
+    2 => "Tuesday",
+    3 => "Wednesday",
+    _ => "Invalid Day"
+};
+Console.WriteLine(dayName);
