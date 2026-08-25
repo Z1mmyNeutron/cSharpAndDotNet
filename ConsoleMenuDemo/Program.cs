@@ -38,3 +38,41 @@ while(true){
     Console.WriteLine();
 
 }
+
+// Traditional switch statement
+string category = "Food";
+switch (category)
+{
+    case "Food":
+        Console.WriteLine("Essential spending");
+        break;
+    case "Entertainment":
+        Console.WriteLine("Discretionary spending");
+        break;
+    default:
+        Console.WriteLine("Uncategorized");
+        break;
+}
+
+// Modern switch expression — same logic, returns a value directly
+string spendingType = category switch
+{
+    "Food" => "Essential spending",
+    "Entertainment" => "Discretionary spending",
+    _ => "Uncategorized"
+};
+
+double balance = 150.00;
+
+if (balance < 0)
+{
+    Console.WriteLine("Account overdrawn");
+}
+else if (balance < 50)
+{
+    Console.WriteLine("Balance running low");
+}
+else
+{
+    Console.WriteLine("Balance healthy");
+};
