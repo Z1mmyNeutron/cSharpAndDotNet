@@ -92,3 +92,13 @@ string dayName = day switch{
     _ => "Invalid Day"
 };
 Console.WriteLine(dayName);
+
+Console.Write("Enter your age again: ");
+int customerAge = Convert.ToInt32(Console.ReadLine());
+
+string ticketType = customerAge switch{
+    < 13 => "Child Ticket",
+    >= 13 and < 60 => "Adult Ticket",
+    >= 60 => "Senior Citizen Ticket"
+};
+Console.WriteLine(ticketType);
