@@ -60,3 +60,14 @@ string[] movies = {
 foreach(string movie in movies){
     Console.WriteLine(movie);
 };
+//break immediately exists a loop
+for(int i = 1; i <= 10; i++){
+    
+    if(i==5){
+        break;
+    }
+    if(i == 3){
+        continue;
+    }
+    Console.WriteLine(i);
+};
