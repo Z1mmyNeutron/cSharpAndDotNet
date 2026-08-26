@@ -101,19 +101,20 @@
 
 Category foodCategory = new Category("Food");
 Expense lunchExpense = new Expense("Lunch", 250, foodCategory);
-Console.WriteLine(lunchExpense.Title);
-Console.WriteLine(lunchExpense.Amount);
-Console.WriteLine(lunchExpense.Category.Name);
+lunchExpense.PrintDetails();
+// Console.WriteLine(lunchExpense.Title);
+// Console.WriteLine(lunchExpense.Amount);
+// Console.WriteLine(lunchExpense.Category.Name);
 
-Category travelCategory = new Category("Travel");
+// Category travelCategory = new Category("Travel");
 
-Expense cabExpense = new Expense(
-    "Airport cab",
-    500,
-    travelCategory
-);
+// Expense cabExpense = new Expense(
+//     "Airport cab",
+//     500,
+//     travelCategory
+// );
 
-Console.WriteLine();
-Console.WriteLine(cabExpense.Title);
-Console.WriteLine(cabExpense.Amount);
-Console.WriteLine(cabExpense.Category.Name);
+// Console.WriteLine();
+// Console.WriteLine(cabExpense.Title);
+// Console.WriteLine(cabExpense.Amount);
+// Console.WriteLine(cabExpense.Category.Name);

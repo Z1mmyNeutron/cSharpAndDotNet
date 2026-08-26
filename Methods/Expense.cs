@@ -10,6 +10,6 @@ public class Expense : IPrintable{
     }
     public virtual void PrintDetails(){
         Console.WriteLine($"Title: {Title}");
-        Console.WriteLine($"Amountt: {Amount}");
+        Console.WriteLine($"Amount: {Amount}");
     }
 }
