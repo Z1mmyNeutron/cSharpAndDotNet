@@ -1,0 +1,363 @@
+Modern software is built from more than isolated lines of code. Applications must accept input, make decisions, process collections of data, handle errors, work with files, and remain easy to test and maintain as they grow.
+
+C# provides a structured and approachable way to build these applications. It combines clear syntax with powerful programming features such as object-oriented design, collections, LINQ, pattern matching, exception handling, asynchronous programming, and testing support.
+
+This course introduces C# from the ground up and gradually develops the skills required to create complete console applications. Instead of learning concepts in isolation, you will apply them through practical demonstrations.
+
+You will build an Expense Tracker, a menu-driven console application that records daily expenses, stores them in categories such as food, travel, and utilities, saves them to a file so data is not lost between sessions, and generates monthly summaries showing where money was spent. The project starts as a few lines of code in Module 1 and grows with every new concept you learn, until it becomes a complete, tested application by the end of Module 3.  
+
+Throughout the course, you will learn how to write clear instructions, organize logic into reusable methods, represent real-world information with classes and objects, process data using collections and LINQ, handle invalid situations safely, and save information using file operations.
+
+You will also explore modern development practices such as asynchronous programming, unit testing with xUnit, debugging, and version control with Git and GitHub.
+
+By the end of this course, you will be able to:
+
+Apply core C# concepts such as variables, data types, operators, input, decisions, and loops.
+
+Create reusable program logic using methods, parameters, return values, scope, and method overloading.
+
+Design object-oriented applications using classes, properties, constructors, encapsulation, inheritance, and interfaces.
+
+Manage application data using lists, dictionaries, lambda expressions, and LINQ.
+
+Use modern C# features such as records, pattern matching, nullable reference types, and exception handling.
+
+Read and write files and perform asynchronous operations using async and await.
+
+Debug and test C# code using breakpoints, xUnit, and structured testing practices.
+
+Manage source code changes using Git and GitHub.
+
+Build a complete console application by combining programming fundamentals, data management, error handling, and testing.
+
+  Who This Course Is For :
+
+Beginners starting their programming journey
+
+Students learning software development
+
+Aspiring C# developers
+
+Developers preparing for advanced .NET development
+
+Course Structure
+
+The learning journey is organized across three progressive modules. You will begin with core C# syntax and program flow, move into reusable code, object-oriented programming, and data management, and then complete the course with modern C# features, file handling, asynchronous programming, testing, and version control.
+
+Code Files -  Download the starter and completed project files for the course here: 
+
+Module 1: C# Essentials
+
+This module establishes the foundation required to write and run C# programs.
+
+You will set up the development environment, explore the Visual Studio Code workspace, and understand how a basic console application is organized. You will then work with variables, data types, operators, user input, formatted output, conditional statements, pattern matching, and loops.
+
+By the end of the module, you will be able to create interactive console programs that accept information, process decisions, repeat actions, and guide users through menu-driven workflows.
+
+Module 2: Building Blocks of Real Programs
+
+This module focuses on organizing code and managing application data effectively.
+
+You will create reusable methods, work with parameters and return values, apply method overloading, and use debugging tools to inspect program behavior. You will then explore object-oriented programming through classes, properties, constructors, encapsulation, inheritance, and interfaces.
+
+The module also introduces lists, dictionaries, generics, delegates, lambda expressions, and LINQ. These tools will help you store, search, filter, group, sort, and summarize data in a clear and maintainable way.
+
+By the end of the module, you will be able to design structured C# applications whose logic and data are divided into reusable components.
+
+Module 3: Modern C# and the Capstone
+
+This module brings together modern language features and practical development workflows.
+
+You will use records, pattern matching, nullable reference types, and exception handling to write safer and more expressive code. You will also learn how to read and write application data using File I/O and perform these operations asynchronously with async and await.
+
+Testing and version control are also introduced. You will write xUnit tests to verify application behavior and use Git and GitHub to track and manage project changes.
+
+The module concludes with the Expense Tracker capstone, where you will combine the major concepts covered throughout the course into one complete console application.
+
+Where This Course Takes You
+
+By the time you complete this course, you will be able to do more than explain basic C# syntax. You will know how to use the language to solve practical problems and build applications that are organized, testable, and maintainable.
+
+ Writing a few lines of code is where every developer begins. What separates a beginner from a working developer is the ability to divide logic into reusable methods, model information with classes, process collections with LINQ, handle errors safely, save data reliably, and verify behaviour with tests. Those are exactly the skills this course gives you. 
+
+The foundation you build here will prepare you to explore more advanced areas such as .NET application development, web APIs, cloud-native systems, desktop applications, and enterprise software.
+
+Start Module 1 and begin building a strong foundation in C# programming.
+
+
+
+____________
+Introduction 
+
+Every program is, at its core, a set of instructions for working with data — storing it, transforming it, and making decisions based on it. This reading covers how C# stores that data through variables and types, and how operators let you act on it. By the end, you'll understand the difference between value and reference types, how to read user input and format output, and how to safely convert data from one type to another — all of which the Expense Tracker will depend on from this point forward.
+
+Value types vs. reference types 
+
+Every variable in C# falls into one of two categories, and the difference shapes how your data behaves when it's copied or passed around.
+
+
+csharp
+1234567
+int a = 10;int b = a;      // b gets its own copy — 10b = 20;         // a is still 10 int[] arr1 = { 1, 2, 3 };int[] arr2 = arr1;   // arr2 points to the same array as arr1arr2[0] = 99;        // arr1[0] is now 99 too
+
+Primitive types
+
+C# ships with a small set of built-in types that cover almost everything you'll need before reaching for anything custom.  
+
+
+int and double are the two you'll use constantly in the Expense Tracker — int for counts and IDs, double for amounts of money.
+
+Strings: interpolation and common methods 
+
+Strings are reference types, but C# gives them special treatment because text is everywhere in real programs. The cleanest way to build a string from variables is interpolation — placing a $ before the string and variable names inside curly braces.
+
+csharp
+12345
+string item = "Coffee";double price = 4.50; string receipt = $"{item} costs ${price:F2}";Console.WriteLine(receipt);   // Coffee costs $4.50
+
+ A few string methods come up often enough to know by name:  
+
+csharp
+1234567
+string raw = "  Groceries  "; string clean = raw.Trim();          // "Groceries" — raw is unchangedstring shouty = raw.ToUpper();      // "  GROCERIES  "bool hasWord = raw.Contains("Grocer");   // trueint length = raw.Length;                 // 13, including the spaces 
+
+var and type inference 
+
+Instead of writing the type explicitly, you can let the compiler figure it out from the value on the right-hand side using var.  
+
+csharp
+123
+var count = 5;          // compiler infers intvar price = 9.99;       // compiler infers doublevar name = "Receipt";   // compiler infers string
+
+By convention, local variables and parameters in C# use camelCase — totalAmount, not TotalAmount or total_amount. The compiler doesn't enforce this, but every C# codebase you'll encounter follows it.  
+
+This isn't a different kind of variable — count is still genuinely an int underneath. var is just shorthand the compiler resolves once, at compile time. It's most useful when the type is obvious from context or unwieldy to type out; for everything else, writing the explicit type often keeps code easier to read at a glance.
+
+Operators: arithmetic, comparison, logical 
+
+Operators are how you act on values — doing math, comparing them, or combining true/false logic.
+
+
+csharp
+1234
+int total = 100;total += 25;             // total is now 125 bool isAffordable = total <= 200 && total > 0;   // true
+
+Type conversion: implicit, explicit, Convert, Parse 
+
+csharp
+123456789101112131415
+// Implicit — safe, no data lost, compiler does it automaticallyint wholeNumber = 10;double asDouble = wholeNumber;        // 10 → 10.0, always safe // Explicit (a "cast") — you accept possible data lossdouble price = 9.75;int rounded = (int)price;             // 9.75 → 9, decimal part is dropped // Convert — handles conversions between built-in types, including stringsstring input = "42";int converted = Convert.ToInt32(input); // Parse — converts a string specifically into a number or other typestring userInput = "19.99";double parsed = double.Parse(userInput);
+
+Parse and Convert differ mainly in how they treat null: Parse throws, while Convert returns 0. Both still throw if the string contains something that isn't a number at all, so neither is safe on its own for user input.
+
+Console.ReadLine and Console.WriteLine 
+
+These two methods are how your console app talks to the person using it. WriteLine sends text out; ReadLine waits for the user to type something and press Enter, then hands that input back as a string.
+
+csharp
+12345
+Console.Write("Enter an expense amount: ");string input = Console.ReadLine();double amount = double.Parse(input); Console.WriteLine($"You entered: ${amount:F2}");
+
+The :F2 after the variable is a format specifier — it means "show this as a fixed-point number with two decimal places," which is what you want for currency.
+
+Note that ReadLine always returns a string, regardless of what the user typed — even if they type 25, you get back the text "25", not the number. That's why Parse shows up immediately after almost every ReadLine call you'll write in this course.  
+
+csharp
+123456789101112
+Console.Write("Enter an expense amount: ");string? input = Console.ReadLine(); if (decimal.TryParse(input, out decimal amount)){    Console.WriteLine($"You entered: {amount:F2}");}else{    Console.WriteLine("That wasn't a valid number.");} 
+
+TryParse doesn't crash. It returns true or false to tell you whether the conversion worked, and hands you the converted value through out. For anything a user types, reach for TryParse rather than Parse.  
+
+
+Summary
+
+
+With variables, types, and operators in place, your programs can now hold data, transform it, and respond to what a user types in. Next up: control flow — using if, switch, and loops to make decisions and repeat work, the pieces that turn a straight-line program into one that actually reacts.  
+
+
+Go to next item
+Completed
+
+Like
+
+Dislike
+
+Report an issue
+
+____________
+Introduction 
+
+So far, every program you've written has run the same way every time, top to bottom, line by line. Control flow changes that — it gives your code the ability to make decisions and repeat work. This reading covers conditionals, pattern matching, the four kinds of loops C# offers, and the small mistakes that trip up almost everyone the first time they write a loop. By the end, the Expense Tracker will be able to react to what a user enters, not just print fixed text.
+
+if, else if, else 
+
+The most basic decision in any program is a branch: do one thing if a condition is true, another if it isn't.
+
+csharp
+1234567891011121314
+double balance = 150.00; if (balance < 0){    Console.WriteLine("Account overdrawn");}else if (balance < 50){    Console.WriteLine("Balance running low");}else{    Console.WriteLine("Balance healthy");}
+
+Each condition is checked in order, top to bottom, and the first one that evaluates to true is the branch that runs — the rest are skipped entirely. else is your catch-all, the branch that runs when nothing above it matched.  
+
+
+switch statements and switch expressions 
+
+When you're checking one variable against many possible exact values, a switch is cleaner than a long chain of else if statements. C# supports two forms: the traditional statement form, and a newer, more compact expression form.  
+
+csharp
+12345678910111213141516171819202122
+// Traditional switch statementstring category = "Food";switch (category){    case "Food":        Console.WriteLine("Essential spending");        break;    case "Entertainment":        Console.WriteLine("Discretionary spending");        break;    default:        Console.WriteLine("Uncategorized");        break;} // Modern switch expression — same logic, returns a value directlystring spendingType = category switch{    "Food" => "Essential spending",    "Entertainment" => "Discretionary spending",    _ => "Uncategorized"};
+
+The expression form skips break entirely and uses _ instead of default for the catch-all case. It reads more like a lookup table than a series of steps, and it's the style you'll see more often in modern C# code.
+
+Pattern matching basics 
+
+Pattern matching extends switch beyond exact value checks — it lets you match based on a value's type, its range, or its shape.
+
+csharp
+123456789101112131415
+double amount = 250.00; string sizeLabel = amount switch{    < 0 => "Invalid",    < 50 => "Small expense",    < 500 => "Medium expense",    _ => "Large expense"}; object input = 42;if (input is int number){    Console.WriteLine($"It's an integer: {number}");}
+
+The second example, is int number, does two things in one step: it checks whether input is actually an int, and if so, hands you that value already cast into a new variable called number. This is the foundation pattern matching builds on, and it shows up again when working with custom types in Module 2.
+
+for, while, do-while, foreach
+
+C# gives you four loop styles, and each one fits a different shape of problem.
+
+
+csharp
+12345678910111213141516171819202122232425262728
+// for — fixed number of repetitionsfor (int i = 1; i <= 3; i++){    Console.WriteLine($"Expense #{i}");} // while — condition checked before each loopint attempts = 0;while (attempts < 3){    Console.WriteLine("Trying again...");    attempts++;} // do-while — body runs at least once, condition checked afterstring input;do{    Console.Write("Enter a category (or 'done'): ");    input = Console.ReadLine();} while (input != "done"); // foreach — iterate over every item in a collectionstring[] categories = { "Food", "Travel", "Bills" };foreach (string category in categories){    Console.WriteLine(category);}
+
+break and continue 
+
+Both keywords change a loop's normal path, but in opposite ways. break exits the loop immediately, skipping everything left in it. continue skips just the current iteration and moves straight to the next one.  
+
+csharp
+123456789101112131415
+foreach (int amount in new[] { 10, -5, 20, 30 }){    if (amount < 0)    {        continue;   // skip this one, move to the next    }     if (amount > 25)    {        break;      // stop the loop entirely    }     Console.WriteLine($"Processing: {amount}");}// Output: Processing: 10  →  Processing: 20  (then stops at 30)
+
+Common pitfalls: off-by-one, infinite loops 
+
+Two mistakes account for the majority of loop bugs, and both are worth recognizing on sight rather than debugging from scratch each time.  
+
+
+csharp
+1234567891011121314
+// Off-by-one — this throws an IndexOutOfRangeExceptionint[] amounts = { 10, 20, 30 };for (int i = 0; i <= amounts.Length; i++)   // should be < , not <={    Console.WriteLine(amounts[i]);} // Infinite loop — count never changes, condition never becomes falseint count = 0;while (count < 5){    Console.WriteLine("Looping forever...");    // missing: count++;}
+
+The fix for both is the same habit: before running a loop, trace through the first and last iteration by hand and confirm the loop variable actually moves toward the condition that ends it.  
+
+Summary  
+
+
+With branching and loops in place, your programs can now make real decisions and repeat work safely. That's the last piece of Module 1 — next up, Module 2 begins with methods: breaking code into reusable, well-named pieces instead of one long block of logic. 
+
+____________What this module covered 
+
+Module 1 took you from nothing installed to a program that can store data, make decisions, and repeat work. Three lessons, each building directly on the  last: get C# running on your machine, learn what data actually looks like once it's in memory, then learn how to control the order your code runs in. Together, these three lessons are the foundation every later module in this course assumes you already have — Module 2 will not re-explain variables or loops, it will simply use them.
+
+
+From environment to execution
+
+Everything in this module sits on top of one fact: C# code doesn't run directly — it compiles to an intermediate language that the .NET runtime then executes. The SDK bundles the compiler, the runtime, and the dotnet CLI you've used in every lesson so far (dotnet new, dotnet run, dotnet build). VS Code, once the C# Dev Kit extension is installed, layers IntelliSense and live error-checking on top of that pipeline, so most mistakes show up underlined before you ever hit run. None of this required understanding the .NET platform itself — that's the subject of the next course. Here, the SDK was simply the engine that made the language work.
+
+Data: types, values, and conversion 
+
+Lesson 1.2 introduced the two fundamentally different ways C# stores data. Value types — int, double, bool, char — copy the actual data when assigned to a new variable, so the two variables become fully independent. Reference types — string, arrays, and later, classes — copy a pointer to shared data instead, so two variables can end up pointing at the very same object. var doesn't change either of these behaviors; it just lets the compiler infer the type from the assigned value rather than you naming it explicitly.
+
+Conversion between types came in four flavors, and the distinction between them matters in practice, not just in theory. Implicit conversion is automatic and safe — no data lost. Explicit conversion (a cast) accepts possible data loss, like a double losing its decimal part when cast to int. Convert and Parse both turn strings into numbers, but Parse throws immediately on invalid input while Convert handles null gracefully — a distinction that matters every time you process something typed in by a user, since Console.ReadLine always returns a string, regardless of what was actually typed.
+
+csharp
+123456789101112131415161718
+// Module 1, end to end: read input, convert it, branch on it, repeatConsole.Write("Enter an expense amount: ");string input = Console.ReadLine();double amount = double.Parse(input); string size = amount switch{    < 50 => "Small expense",    < 500 => "Medium expense",    _ => "Large expense"}; Console.WriteLine($"{size}: ${amount:F2}"); for (int i = 1; i <= 3; i++){    Console.WriteLine($"Reminder #{i}: review your expenses weekly");}
+
+Operators and control flow, working together 
+
+Operators act on the data Lesson 1.2 introduced: arithmetic for math, comparison for true/false checks, logical for combining multiple conditions, and assignment shortcuts like += for updating a variable using its own current value. Lesson 1.3 then gave you the structures that use those operators to actually steer a program. if/else if/else and switch (in both its traditional and modern expression form) choose between paths based on a condition. Pattern matching extended that further — an is int number check both tests a value's type and hands you that value already cast, and range patterns in switch expressions matched a value against a band rather than an exact case.
+
+Repetition came in four shapes, each suited to a different kind of problem: for when the number of repetitions is known up front, while when a condition is checked before each pass and might never run at all, do-while when you need the loop body to run at least once before checking anything, and foreach for walking through every item in a collection without managing a counter yourself. break and continue gave you finer control inside any of these — exiting a loop entirely, or skipping just the current pass.
+
+
+Summary  
+
+
+You now have everything needed to write a program that takes input, stores it correctly, and reacts to it with real decisions and repetition. Module 2 picks up immediately from here: turning blocks of repeated logic into reusable, well-named methods, then structuring the Expense Tracker itself with classes and objects. 
+
+____________Introduction 
+
+Up to this point, every program you've written has lived inside one block of code. That works for small programs, but it breaks down fast as logic grows — the same few lines get copy-pasted everywhere, and a single bug means hunting down every copy. Methods solve this by giving a piece of logic a name and a single home. This reading covers how to define and call methods, the different ways C# lets you pass data into them, how to write code that reads clearly to someone else, and how to use the debugger to see exactly what your code is doing when it doesn't behave as expected.
+
+Defining and calling methods 
+
+A method is a named, reusable block of code. You define it once, then call it by name as many times as you need, anywhere in your program.
+
+csharp
+123456789
+// Defining a methodstatic double CalculateTotal(double price, int quantity){    return price * quantity;} // Calling itdouble total = CalculateTotal(4.50, 3);Console.WriteLine($"Total: ${total:F2}");   // Total: $13.50
+
+The method's signature — its name, parameters, and return type — is the contract other code relies on. Anywhere in the program that needs this calculation now calls CalculateTotal instead of repeating the math, so a bug fix or a change in logic only has to happen in one place.  
+
+
+Parameters: value, ref, out, optional, named 
+
+Not all parameters behave the same way. By default, C# passes arguments by value — the method gets a copy. The other keywords change that behavior for specific situations.  
+
+csharp
+1234567891011121314151617181920212223242526
+// Value (default) — the method gets a copy, original is untouchedvoid TryDiscount(double price){    price = price * 0.9;   // only changes the local copy} // ref — the method can modify the caller's actual variablevoid ApplyDiscount(ref double price){    price = price * 0.9;   // changes the original variable} // out — used when a method needs to return more than one valuebool TryParseAmount(string input, out double amount){    return double.TryParse(input, out amount);} // optional — has a default value if the caller doesn't supply onedouble CalculateTax(double amount, double rate = 0.08){    return amount * rate;} // named — the caller specifies which parameter each value belongs todouble tax = CalculateTax(amount: 100, rate: 0.05);
+
+ref and out look similar but solve different problems: ref is for when a method needs to modify a value that already exists, out is for when a method needs to produce a brand-new value the caller doesn't have yet — TryParse is the most common example you'll encounter, since it returns both a success flag and the parsed result at once.
+
+Return types and void 
+
+A method's return type tells you what kind of value comes back when it finishes. If a method doesn't need to hand anything back — it just performs an action — its return type is void.
+
+csharp
+1234567891011
+// Returns a valuedouble GetTotal(double price, int quantity){    return price * quantity;} // Returns nothing — just performs an actionvoid PrintReceipt(string item, double price){    Console.WriteLine($"{item}: ${price:F2}");}
+
+Every path through a method with a non-void return type must return a value of that type — the compiler enforces this, so a missing return on some branch is caught before the program ever runs.
+
+Method overloading 
+
+Overloading lets multiple methods share the same name as long as their parameter lists are different. The compiler picks the right one based on what you pass in.
+
+12345678910111213
+double CalculateTotal(double price, int quantity){    return price * quantity;} double CalculateTotal(double price, int quantity, double discount){    return price * quantity * (1 - discount);} // The compiler chooses based on how many arguments you passCalculateTotal(4.50, 3);          // calls the first versionCalculateTotal(4.50, 3, 0.1);     // calls the second version
+
+This is useful when a few versions of the same idea make sense — calculating a total with or without a discount — rather than inventing a separate, less obvious name for each variation.
+
+Scope and variable lifetime 
+
+A variable only exists within the block of code where it's declared — its scope. Once that block ends, the variable is gone.
+
+
+csharp
+123456789101112
+void ProcessExpense(double amount){    double tax = amount * 0.08;   // scoped to the whole method     if (amount > 100)    {        double surcharge = 5.00;   // only exists inside this if block        tax += surcharge;    }    // surcharge is no longer accessible here — it's out of scope    Console.WriteLine($"Tax: ${tax:F2}");}
+
+A variable declared inside a loop is recreated fresh on every pass and disappears at the end of each one — this is exactly why a loop counter declared inside for (int i = 0; ...) can't be read outside the loop.
+
+Naming conventions and clean code basics 
+
+Code is read far more often than it's written, and consistent naming is the cheapest way to make that reading easier. C# convention uses PascalCase for method names and class names, and camelCase for variables and parameters.
+
+csharp
+1234567891011
+// Clear, conventional namingdouble CalculateMonthlyTotal(double dailyAverage, int daysInMonth){    return dailyAverage * daysInMonth;} // Unclear — works, but costs the next reader timedouble Calc(double d, int n){    return d * n;}
+
+A good method name describes what it does well enough that you rarely need to read its body to understand its purpose. A method that does one clear thing is also easier to test, debug, and reuse than one that does several unrelated things at once — that single-responsibility habit will matter more once methods start calling each other inside the Expense Tracker.
+
+Debugging: breakpoints, step controls, watch window, call stack 
+
+When a program doesn't behave the way you expect, reading the code alone often isn't enough — the debugger lets you pause execution and inspect exactly what's happening, line by line.
+
+
+In VS Code, setting a breakpoint is as simple as clicking in the margin to the left of a line number — a red dot appears, and running with Debug instead of Run will pause there automatically. From that paused state, the Watch window lets you type in any variable to see its current value, and the Call Stack panel shows exactly how the program got to that line, which is often the fastest way to find where a wrong value first appeared.  
+
+Summary  
+
+
+With methods in place, your code can now be broken into clear, reusable, well-named pieces — and when something goes wrong, you have the tools to see exactly why. Next up: object-oriented programming, where the Expense Tracker starts taking real shape through classes, encapsulation, and inheritance.
+

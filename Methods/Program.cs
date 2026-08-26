@@ -100,8 +100,17 @@
 // double tax = CalculateTax(amount: 100, rate: 0.05);
 
 Category foodCategory = new Category("Food");
+Category frequency = new Category("Monthly");
 Expense lunchExpense = new Expense("Lunch", 250, foodCategory);
 lunchExpense.PrintDetails();
+RecurringExpense netflixSubscription = new RecurringExpense("Netflix", 499, "Monthly", frequency);
+netflixSubscription.PrintDetails();
+
+Expense expense = new RecurringExpense("HBO", 399, "Monthly", frequency);
+expense.PrintDetails();
+
+IPrintable printableExpense = new RecurringExpense("Internet Bill", 999, "Monthly", frequency);
+printableExpense.PrintDetails();
 // Console.WriteLine(lunchExpense.Title);
 // Console.WriteLine(lunchExpense.Amount);
 // Console.WriteLine(lunchExpense.Category.Name);
