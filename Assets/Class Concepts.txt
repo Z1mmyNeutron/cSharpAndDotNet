@@ -1,0 +1,85 @@
+class Expense
+{
+    // Fields — the raw data each Expense object stores
+    private double amount;
+    private string category;
+
+    // Properties — controlled access to that data from outside the class
+    public double Amount
+    {
+        get { return amount; }
+        set { amount = value; }
+    }
+
+    public string Category { get; set; }   // shorthand auto-property
+
+    // Constructor — runs once, when a new object is created
+    public Expense(double amount, string category)
+    {
+        this.amount = amount;
+        this.Category = category;
+    }
+}
+
+// Creating an object from the class
+Expense coffee = new Expense(4.50, "Food");
+Console.WriteLine($"{coffee.Category}: ${coffee.Amount:F2}");
+
+
+_______________
+class Expense
+{
+    private double amount;   // hidden — only this class can touch it directly
+
+    public double Amount     // public gateway — controls how amount is read or set
+    {
+        get { return amount; }
+        set
+        {
+            if (value < 0)
+                throw new ArgumentException("Amount cannot be negative");
+            amount = value;
+        }
+    }
+}
+
+_______________
+This is the real value of encapsulation: the set block above can validate every value before it's stored, something a plain public field could never enforce. Outside code can use Amount freely, but it can never set amount to an invalid value by accident.
+
+Inheritance and base 
+
+Inheritance lets one class build on another, reusing its fields, properties, and methods while adding or changing what it needs. The original is the base class; the new one is the derived class.
+
+class Expense
+{
+    public double Amount { get; set; }
+    public string Category { get; set; }
+
+    public Expense(double amount, string category)
+    {
+        Amount = amount;
+        Category = category;
+    }
+
+    public virtual void PrintDetails()
+    {
+        Console.WriteLine($"{Category}: ${Amount:F2}");
+    }
+}
+
+class RecurringExpense : Expense
+{
+    public string Frequency { get; set; }
+
+    // base(...) calls the parent class's constructor first
+    public RecurringExpense(double amount, string category, string frequency)
+        : base(amount, category)
+    {
+        Frequency = frequency;
+    }
+}
+
+__________
+
+RecurringExpense automatically has Amount and Category without redefining them — it inherited them from Expense. The : base(amount, category) call ensures the parent class's constructor runs first, so the inherited fields are properly set up before the derived class adds anything on top.
+

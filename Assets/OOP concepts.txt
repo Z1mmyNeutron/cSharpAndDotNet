@@ -1,0 +1,74 @@
+Introduction 
+
+Everything you've written so far has worked with loose, separate pieces of data — an amount here, a category string there, all tracked by hand. Object-oriented programming lets you bundle related data and behavior into a single unit, modeled after a real-world concept. This reading covers how to define classes, control what's visible from outside them, build new classes on top of existing ones, and choose between abstract classes and interfaces. By the end, the Expense Tracker stops being a script and starts being a small system of real, related objects.
+
+Classes: fields, properties, constructors 
+
+A class is a blueprint. It doesn't hold data itself — it describes what data an object of that type will hold, and what it can do. An object is one specific instance built from that blueprint.
+
+csharp
+1234567891011121314151617181920212223242526
+class Expense{    // Fields — the raw data each Expense object stores    private double amount;    private string category;     // Properties — controlled access to that data from outside the class    public double Amount    {        get { return amount; }        set { amount = value; }    }     public string Category { get; set; }   // shorthand auto-property     // Constructor — runs once, when a new object is created    public Expense(double amount, string category)    {        this.amount = amount;        this.Category = category;    }} // Creating an object from the classExpense coffee = new Expense(4.50, "Food");Console.WriteLine($"{coffee.Category}: ${coffee.Amount:F2}");
+
+The constructor is what runs the moment new Expense(...) is called — it's where you guarantee an object starts in a valid state, rather than leaving its fields empty and hoping someone sets them later. Properties using { get; set; } are the standard way to expose a field safely — they look like a field from the outside but give you a controlled gateway to it.  
+
+
+Encapsulation and access modifiers 
+
+Encapsulation means keeping an object's internal data protected from direct, unrestricted access by outside code — exposing only what needs to be exposed, through a controlled path like a property or method. Access modifiers are how you enforce that.  
+
+
+csharp
+123456789101112131415
+class Expense{    private double amount;   // hidden — only this class can touch it directly     public double Amount     // public gateway — controls how amount is read or set    {        get { return amount; }        set        {            if (value < 0)                throw new ArgumentException("Amount cannot be negative");            amount = value;        }    }}
+
+This is the real value of encapsulation: the set block above can validate every value before it's stored, something a plain public field could never enforce. Outside code can use Amount freely, but it can never set amount to an invalid value by accident.
+
+Inheritance and base 
+
+Inheritance lets one class build on another, reusing its fields, properties, and methods while adding or changing what it needs. The original is the base class; the new one is the derived class.
+
+csharp
+12345678910111213141516171819202122232425262728
+class Expense{    public double Amount { get; set; }    public string Category { get; set; }     public Expense(double amount, string category)    {        Amount = amount;        Category = category;    }     public virtual void PrintDetails()    {        Console.WriteLine($"{Category}: ${Amount:F2}");    }} class RecurringExpense : Expense{    public string Frequency { get; set; }     // base(...) calls the parent class's constructor first    public RecurringExpense(double amount, string category, string frequency)        : base(amount, category)    {        Frequency = frequency;    }}
+
+RecurringExpense automatically has Amount and Category without redefining them — it inherited them from Expense. The : base(amount, category) call ensures the parent class's constructor runs first, so the inherited fields are properly set up before the derived class adds anything on top.
+
+
+Polymorphism: virtual, override 
+
+Polymorphism lets a derived class provide its own version of a method the base class already defines. Marking the base method virtual makes this possible; marking the derived version override replaces it.  
+
+csharp
+1234567891011121314151617181920212223
+class Expense{    public double Amount { get; set; }    public string Category { get; set; }     public virtual void PrintDetails()    {        Console.WriteLine($"{Category}: ${Amount:F2}");    }} class RecurringExpense : Expense{    public string Frequency { get; set; }     public override void PrintDetails()    {        Console.WriteLine($"{Category}: ${Amount:F2} (repeats {Frequency})");    }} Expense item = new RecurringExpense { Amount = 15, Category = "Subscription", Frequency = "Monthly" };item.PrintDetails();   // "Subscription: $15.00 (repeats Monthly)" — the override runs, not the base version
+
+ The last line is the important part: even though item is declared as type Expense, calling PrintDetails() runs RecurringExpense's version, because that's the object's actual type at runtime. This is what lets you treat a list of mixed expense types uniformly while each one still behaves correctly on its own terms.
+
+Abstract classes vs. interfaces 
+
+Both let you define a contract that other classes must follow, but they solve slightly different problems.
+
+
+1234567891011121314151617181920
+// Abstract class — can hold real implementationabstract class Expense{    public double Amount { get; set; }    public abstract string GetSummary();   // must be implemented by derived classes} // Interface — pure contract, no implementation at allinterface IReportable{    string GetSummary();} class RecurringExpense : Expense, IReportable{    public override string GetSummary()    {        return $"Recurring: ${Amount:F2}";    }}
+
+ A class can only extend one abstract class, but it can implement as many interfaces as it needs — which is why interfaces tend to describe a single capability (IReportable, ISavable) rather than a whole identity.
+
+How these apply to the Expense Tracker domain 
+
+Every concept in this reading maps directly onto the Expense Tracker you're building. Expense becomes the base class holding shared data like amount and category. RecurringExpense and other specific kinds of expenses inherit from it, adding only what makes them different. Encapsulation keeps Amount from ever being set to a negative number by mistake. Polymorphism lets you loop through a single list of expenses and call PrintDetails() on each one, even though some are recurring and some aren't — each object knows how to describe itself correctly without the calling code needing to check its type first.
+
+Summary
+
+
+With classes, inheritance, and interfaces in place, the Expense Tracker is no longer just data and logic living side by side — it's a small system of objects that each know what they are and how to behave. Next up: collections, lambdas, and LINQ — the tools for storing many of these objects at once and working with them efficiently.  
+
+Mark as completed
+
+Like
+
+Dislike
+
+Report an issue
+
