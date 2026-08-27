@@ -5,7 +5,7 @@ public class RecurringExpense : Expense{
         string title,
         double amount,
         string frequency)
-         : base(title, amount){
+         : base(title, amount, "Recurring"){
             Frequency = frequency;
         }
         public override void PrintDetails(){
