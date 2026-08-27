@@ -1,0 +1,1 @@
+public record Expense(string Title, double Amount, string Category);
