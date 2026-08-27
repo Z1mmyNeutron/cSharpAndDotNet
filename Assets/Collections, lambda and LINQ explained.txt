@@ -1,0 +1,77 @@
+Introduction 
+
+A single Expense object is useful, but a real expense tracker needs to hold dozens of them, search through them, and summarize them — total spending by category, the most recent transaction, expenses sorted by amount. This reading covers the collections that store many objects at once, the generics concept that makes those collections type-safe, lambdas as a compact way to write small pieces of logic, and LINQ, which turns filtering and summarizing a collection into a single readable line instead of a hand-written loop.
+
+List<T> and Dictionary<TKey, TValue> 
+
+Arrays have a fixed size decided up front. List<T> solves that — it grows and shrinks as you add or remove items, and it's the collection you'll reach for by default.
+
+csharp
+123456
+List<Expense> expenses = new List<Expense>();expenses.Add(new Expense(4.50, "Food"));expenses.Add(new Expense(60.00, "Travel")); expenses.Remove(expenses[0]);   // removes the first expenseint count = expenses.Count;     // current number of items
+
+Dictionary<TKey, TValue> stores pairs of a key and a value, letting you look something up directly by its key instead of searching through a list one item at a time.  
+
+csharp
+12345
+Dictionary<string, double> categoryTotals = new Dictionary<string, double>();categoryTotals["Food"] = 4.50;categoryTotals["Travel"] = 60.00; double foodTotal = categoryTotals["Food"];   // 4.50 — direct lookup, no searching
+
+
+Generics concept 
+
+The <T> in List<T> is what makes it a generic type — a single definition that works with any type you specify, while still being fully type-checked at compile time.  
+
+csharp
+12345
+List<Expense> expenses = new List<Expense>();   // T is ExpenseList<string> categories = new List<string>();   // T is stringList<int> ids = new List<int>();                // T is int expenses.Add("not an expense");   // compile error — caught before the program runs
+
+Without generics, a collection would either be locked to one specific type, or would have to accept anything and risk runtime errors when the wrong type slipped in. Generics give you both flexibility and safety — List<Expense> will only ever hold Expense objects, and the compiler enforces that for you.
+
+Delegates, Func<>, Action<> 
+
+A delegate is a type that represents a method itself — not the result of calling it, but a reference to the method, which can be passed around and invoked later. Func<> and Action<> are built-in delegate types that cover almost every case you'll need.
+
+
+csharp
+12345
+Func<double, double> addTax = amount => amount * 1.08;double total = addTax(100);   // 108 Action<string> printReceipt = item => Console.WriteLine($"Receipt: {item}");printReceipt("Coffee");   // Receipt: Coffee
+
+The number of type parameters before the last one in Func<> tells you how many inputs the method takes; the last one is always the return type. Action<> never has a return type, since it represents a method that performs an action without handing anything back.
+
+Lambda syntax and usage 
+
+A lambda is a compact, unnamed method — exactly the kind of small logic Func<> and Action<> are built to hold. The => symbol separates the input from what the lambda does with it.
+
+csharp
+123456789101112
+// Lambda with one parameter, no braces needed for a single expressionFunc<double, bool> isLarge = amount => amount > 100; // Lambda with multiple parametersFunc<double, double, double> calculateTotal = (price, quantity) => price * quantity; // Lambda with a full body, using braces and an explicit returnFunc<double, string> classify = amount =>{    if (amount > 500) return "Large";    return "Small";};
+
+Lambdas exist so you don't have to write and name a separate method for every small piece of logic you only use once — they're especially common as the short condition or transformation passed directly into a LINQ method, which is exactly where they show up next.  
+
+
+LINQ: Where, Select, GroupBy, OrderBy, Sum, First, ToList 
+
+LINQ (Language Integrated Query) lets you filter, transform, and summarize a collection using short, readable methods instead of writing a loop by hand each time.  
+
+csharp
+1234567891011121314151617181920212223242526272829
+List<Expense> expenses = new List<Expense>{    new Expense(4.50, "Food"),    new Expense(60.00, "Travel"),    new Expense(12.00, "Food"),    new Expense(200.00, "Travel")}; // Where — filters items matching a conditionvar foodExpenses = expenses.Where(e => e.Category == "Food").ToList(); // Select — transforms each item into something elsevar amountsOnly = expenses.Select(e => e.Amount).ToList(); // OrderBy — sorts itemsvar sortedByAmount = expenses.OrderBy(e => e.Amount).ToList(); // Sum — adds up a numeric value across all itemsdouble total = expenses.Sum(e => e.Amount); // First — returns the first item matching a conditionvar firstTravel = expenses.First(e => e.Category == "Travel"); // GroupBy — clusters items by a shared keyvar byCategory = expenses.GroupBy(e => e.Category);foreach (var group in byCategory){    Console.WriteLine($"{group.Key}: {group.Sum(e => e.Amount):F2}");}
+
+ToList() appears constantly because most LINQ methods don't immediately produce a list — they produce a lazy, not-yet-calculated sequence. Calling ToList() forces that sequence to actually run and gives you back a real, usable List<T>. Where and Select are the two you'll combine most often: filter down to what you need, then transform it into the shape you actually want.  
+
+
+Method syntax vs. query syntax 
+
+Every LINQ operation can be written two ways: method syntax, chaining methods with ., or query syntax, which reads closer to SQL. Both compile to the exact same result.  
+
+csharp
+1234567891011
+// Method syntax — chained, most common in real codevar result = expenses    .Where(e => e.Category == "Food")    .OrderBy(e => e.Amount)    .ToList(); // Query syntax — reads like a SQL queryvar result2 = (from e in expenses               where e.Category == "Food"               orderby e.Amount               select e).ToList();
+
+Method syntax is far more common in everyday C# code, since it chains naturally and matches how lambdas already look. Query syntax exists mainly for readability in cases with several joins or groupings — for the Expense Tracker, method syntax will be the style you reach for almost every time.  
+
+Summary  
+
+
+With collections, lambdas, and LINQ in place, the Expense Tracker can now hold a real set of expenses and answer real questions about them — totals, categories, the largest transaction — in just a line or two. That closes out Module 2. Module 3 picks up from here with modern C# features and proper error handling, the next step toward a production-ready application.  
+

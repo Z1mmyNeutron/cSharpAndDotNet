@@ -103,3 +103,18 @@ Console.WriteLine("Utility Expenses");
 foreach(Expense expense in utilityExpense){
     Console.WriteLine($"{expense.Title} - {expense.Amount}");
 }
+
+//method syntax
+var foodExpenses = expenses.Where(expense => expense.Category == "Food");
+foreach(Expense expense in foodExpenses){
+    Console.WriteLine(expense.Title);
+}
+
+//Query Syntax
+var foodExpensesQuery = from expense in expenses where expense.Category == "Food" select expense;
+
+Console.WriteLine();
+Console.WriteLine("Food Expenses (Query Syntax)");
+foreach(Expense expense in foodExpensesQuery){
+    Console.WriteLine(expense.Title);
+}
