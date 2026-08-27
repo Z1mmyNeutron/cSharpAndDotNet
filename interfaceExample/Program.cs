@@ -44,11 +44,15 @@
 // foreach(Expense expense in expenses){
 //     displayExpense(expense);
 // }
-
 List<Expense> expenses = new(){
-    new Expense("Lunch",  250, "Food");
-    new Expense("Dinner",  450, "Food");
-    new Expense("Taxi",  700, "Travel");
-    new Expense("Internet",  999, "Utilities");
-    new Expense("Electricity",  1800, "Utilities");
+    new Expense("Lunch",  250, "Food"),
+    new Expense("Dinner",  450, "Food"),
+    new Expense("Taxi",  700, "Travel"),
+    new Expense("Internet",  999, "Utilities"),
+    new Expense("Electricity",  1800, "Utilities")
+};
+var isHighValueExpenses = expenses.Where(expense => expense.Amount > 500);
+Console.WriteLine("High Value Expenses");
+foreach(Expense expense in isHighValueExpenses){
+    Console.WriteLine($"{expense.Title} - {expense.Amount}");
 }

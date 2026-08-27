@@ -1,0 +1,83 @@
+Up to this point, every program you've written has lived inside one block of code. That works for small programs, but it breaks down fast as logic grows — the same few lines get copy-pasted everywhere, and a single bug means hunting down every copy. Methods solve this by giving a piece of logic a name and a single home. This reading covers how to define and call methods, the different ways C# lets you pass data into them, how to write code that reads clearly to someone else, and how to use the debugger to see exactly what your code is doing when it doesn't behave as expected.
+
+Defining and calling methods 
+
+A method is a named, reusable block of code. You define it once, then call it by name as many times as you need, anywhere in your program.
+
+csharp
+123456789
+// Defining a methodstatic double CalculateTotal(double price, int quantity){    return price * quantity;} // Calling itdouble total = CalculateTotal(4.50, 3);Console.WriteLine($"Total: ${total:F2}");   // Total: $13.50
+
+The method's signature — its name, parameters, and return type — is the contract other code relies on. Anywhere in the program that needs this calculation now calls CalculateTotal instead of repeating the math, so a bug fix or a change in logic only has to happen in one place.  
+
+
+Parameters: value, ref, out, optional, named 
+
+Not all parameters behave the same way. By default, C# passes arguments by value — the method gets a copy. The other keywords change that behavior for specific situations.  
+
+csharp
+1234567891011121314151617181920212223242526
+// Value (default) — the method gets a copy, original is untouchedvoid TryDiscount(double price){    price = price * 0.9;   // only changes the local copy} // ref — the method can modify the caller's actual variablevoid ApplyDiscount(ref double price){    price = price * 0.9;   // changes the original variable} // out — used when a method needs to return more than one valuebool TryParseAmount(string input, out double amount){    return double.TryParse(input, out amount);} // optional — has a default value if the caller doesn't supply onedouble CalculateTax(double amount, double rate = 0.08){    return amount * rate;} // named — the caller specifies which parameter each value belongs todouble tax = CalculateTax(amount: 100, rate: 0.05);
+
+ref and out look similar but solve different problems: ref is for when a method needs to modify a value that already exists, out is for when a method needs to produce a brand-new value the caller doesn't have yet — TryParse is the most common example you'll encounter, since it returns both a success flag and the parsed result at once.
+
+Return types and void 
+
+A method's return type tells you what kind of value comes back when it finishes. If a method doesn't need to hand anything back — it just performs an action — its return type is void.
+
+csharp
+1234567891011
+// Returns a valuedouble GetTotal(double price, int quantity){    return price * quantity;} // Returns nothing — just performs an actionvoid PrintReceipt(string item, double price){    Console.WriteLine($"{item}: ${price:F2}");}
+
+Every path through a method with a non-void return type must return a value of that type — the compiler enforces this, so a missing return on some branch is caught before the program ever runs.
+
+Method overloading 
+
+Overloading lets multiple methods share the same name as long as their parameter lists are different. The compiler picks the right one based on what you pass in.
+
+12345678910111213
+double CalculateTotal(double price, int quantity){    return price * quantity;} double CalculateTotal(double price, int quantity, double discount){    return price * quantity * (1 - discount);} // The compiler chooses based on how many arguments you passCalculateTotal(4.50, 3);          // calls the first versionCalculateTotal(4.50, 3, 0.1);     // calls the second version
+
+This is useful when a few versions of the same idea make sense — calculating a total with or without a discount — rather than inventing a separate, less obvious name for each variation.
+
+Scope and variable lifetime 
+
+A variable only exists within the block of code where it's declared — its scope. Once that block ends, the variable is gone.
+
+
+csharp
+123456789101112
+void ProcessExpense(double amount){    double tax = amount * 0.08;   // scoped to the whole method     if (amount > 100)    {        double surcharge = 5.00;   // only exists inside this if block        tax += surcharge;    }    // surcharge is no longer accessible here — it's out of scope    Console.WriteLine($"Tax: ${tax:F2}");}
+
+A variable declared inside a loop is recreated fresh on every pass and disappears at the end of each one — this is exactly why a loop counter declared inside for (int i = 0; ...) can't be read outside the loop.
+
+Naming conventions and clean code basics 
+
+Code is read far more often than it's written, and consistent naming is the cheapest way to make that reading easier. C# convention uses PascalCase for method names and class names, and camelCase for variables and parameters.
+
+csharp
+1234567891011
+// Clear, conventional namingdouble CalculateMonthlyTotal(double dailyAverage, int daysInMonth){    return dailyAverage * daysInMonth;} // Unclear — works, but costs the next reader timedouble Calc(double d, int n){    return d * n;}
+
+A good method name describes what it does well enough that you rarely need to read its body to understand its purpose. A method that does one clear thing is also easier to test, debug, and reuse than one that does several unrelated things at once — that single-responsibility habit will matter more once methods start calling each other inside the Expense Tracker.
+
+Debugging: breakpoints, step controls, watch window, call stack 
+
+When a program doesn't behave the way you expect, reading the code alone often isn't enough — the debugger lets you pause execution and inspect exactly what's happening, line by line.
+
+
+In VS Code, setting a breakpoint is as simple as clicking in the margin to the left of a line number — a red dot appears, and running with Debug instead of Run will pause there automatically. From that paused state, the Watch window lets you type in any variable to see its current value, and the Call Stack panel shows exactly how the program got to that line, which is often the fastest way to find where a wrong value first appeared.  
+
+Summary  
+
+
+With methods in place, your code can now be broken into clear, reusable, well-named pieces — and when something goes wrong, you have the tools to see exactly why. Next up: object-oriented programming, where the Expense Tracker starts taking real shape through classes, encapsulation, and inheritance.
+
+Mark as completed
+
+Like
+
+Dislike
+
+Report an issue
+
