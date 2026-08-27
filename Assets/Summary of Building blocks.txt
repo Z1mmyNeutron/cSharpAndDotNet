@@ -1,0 +1,41 @@
+Module 1 gave you a program that could think — branch, loop, react to input. Module 2 gave it structure. Three lessons, each adding a different layer: methods to organize logic into reusable, well-named pieces, object-oriented programming to model the Expense Tracker as real objects instead of loose data, and collections with LINQ to hold many of those objects at once and actually do something useful with them. By the end of this module, the Expense Tracker stopped being a single script and became a small, organized system.  
+
+
+Methods: organizing logic so it can be reused 
+
+Lesson 2.1 introduced the method as the basic unit of organization in any real program — a named, reusable block of code with a signature that acts as its contract: a name, parameters, and a return type (or void, if it performs an action without returning anything). Parameters could be passed several ways depending on the situation — by value as the default, ref when a method needs to modify a variable that already exists, out when it needs to hand back an extra result, and optional or named parameters for flexibility at the call site. Overloading let several methods share one name as long as their parameter lists differed, which mattered for operations like calculating a total with or without a discount.
+
+Just as important as writing methods was knowing what to do when they didn't work as expected. Breakpoints paused execution at a specific line, step controls moved through code one line at a time, the watch window tracked a variable's value live, and the call stack showed exactly how the program had arrived at the current line — together, the core toolkit for figuring out why before guessing at a fix.
+
+csharp
+12345678
+// Lesson 2.1, in one block: a method with a default parameter and clean namingstatic double CalculateTotalWithTax(double amount, double taxRate = 0.08){    return amount * (1 + taxRate);} double total = CalculateTotalWithTax(100);          // uses the default ratedouble customTotal = CalculateTotalWithTax(100, 0.05);  // overrides it
+
+OOP: modeling the Expense Tracker as real objects 
+
+Lesson 2.2 took the loose data Module 1 worked with — an amount here, a category string there — and gave it real structure. A class became a blueprint: fields held an object's raw data, properties exposed that data through a controlled gateway, and constructors guaranteed every object started in a valid state the moment it was created. Encapsulation, enforced through public, private, and protected, meant a property's set block could validate a value — rejecting a negative Amount, for instance — in a way a plain field never could.
+
+Inheritance let one class build on another: RecurringExpense inherited Amount and Category directly from Expense, using base(...) to ensure the parent's constructor ran first. Marking a method virtual in the base class and override in the derived one enabled polymorphism — calling PrintDetails() on a list of mixed expense types ran each object's own correct version, without the calling code needing to check what type it was first. Abstract classes and interfaces both defined a contract for other classes to follow, but differed in an important way: a class could extend only one abstract class, while it could implement as many interfaces as it needed.
+
+123456789101112131415161718192021
+// Lesson 2.2, in one block: inheritance and polymorphism togetherclass Expense{    public double Amount { get; set; }    public string Category { get; set; }     public virtual void PrintDetails()    {        Console.WriteLine($"{Category}: ${Amount:F2}");    }} class RecurringExpense : Expense{    public string Frequency { get; set; }     public override void PrintDetails()    {        Console.WriteLine($"{Category}: ${Amount:F2} (repeats {Frequency})");    }}
+
+Collections and LINQ: working with many objects at once 
+
+Lesson 2.3 closed the module by giving you somewhere to put all these objects, and a fast way to ask questions about them. List<T> held an ordered, growable sequence of expenses; Dictionary<TKey, TValue> allowed direct lookup by key instead of searching item by item. Generics — the <T> in List<T> — were what made a single collection definition work safely with any type, fully checked at compile time. Lambdas (amount => amount > 100) gave you a compact way to write small pieces of logic inline, most often as the condition or transformation passed directly into a LINQ method.
+
+LINQ itself turned filtering and summarizing into a single readable line: Where filtered, Select transformed, OrderBy sorted, GroupBy clustered items by a shared key, and Sum totaled a numeric value across all of them. Method syntax, chaining these with ., was the style used almost everywhere in real code; query syntax existed mostly for readability in more complex, multi-step queries.
+
+
+Summary  
+
+
+The Expense Tracker is now a real, organized program — methods that do one thing well, objects that model the domain accurately, and collections you can query instead of loop through by hand. Module 3 picks up from here with modern C# features, proper error handling, file persistence, async programming, and finally, testing and Git — the steps that turn this into something genuinely production-ready.  
+
+Mark as completed
+
+Like
+
+Dislike
+
+Repor
