@@ -51,8 +51,55 @@ List<Expense> expenses = new(){
     new Expense("Internet",  999, "Utilities"),
     new Expense("Electricity",  1800, "Utilities")
 };
+
+//where
 var isHighValueExpenses = expenses.Where(expense => expense.Amount > 500);
 Console.WriteLine("High Value Expenses");
 foreach(Expense expense in isHighValueExpenses){
+    Console.WriteLine($"{expense.Title} - {expense.Amount}");
+}
+
+//select
+var expenseTitles = expenses.Select(expense => expense.Title);
+Console.WriteLine();
+Console.WriteLine("Expense Titles");
+foreach(string title in expenseTitles){
+    Console.WriteLine(title);
+}
+
+//OrderBy()
+
+var sortedExpenses = expenses.OrderBy(expense => expense.Amount);
+Console.WriteLine();
+Console.WriteLine("Expenses sorted by Amount");
+foreach(Expense expense in sortedExpenses){
+    Console.WriteLine($"{expense.Title} - {expense.Amount}");
+}
+
+//Group by
+var groupedExpenses = expenses.GroupBy(expense => expense.Category);
+foreach(var group in groupedExpenses){
+    Console.WriteLine($"\nCategory: {group.Key}");
+    foreach(Expense expense in group){
+        Console.WriteLine($"{expense.Title} - {expense.Amount}");
+    }
+}
+
+//sum
+double totalExpense = expenses.Sum(expense => expense.Amount);
+Console.WriteLine();
+Console.WriteLine($"Total Expense: {totalExpense}");
+
+//first()
+Expense firstExpense = expenses.First();
+Console.WriteLine();
+Console.WriteLine($"First Expense: {firstExpense.Title}");
+
+//toList
+List<Expense> utilityExpense = expenses.Where(expense => expense.Category == "Utilities").ToList();
+Console.WriteLine();
+Console.WriteLine("Utility Expenses");
+
+foreach(Expense expense in utilityExpense){
     Console.WriteLine($"{expense.Title} - {expense.Amount}");
 }

@@ -4,6 +4,32 @@ Defining and calling methods
 
 A method is a named, reusable block of code. You define it once, then call it by name as many times as you need, anywhere in your program.
 
+// Value (default) — the method gets a copy, original is untouched
+void TryDiscount(double price)
+{
+    price = price * 0.9;   // only changes the local copy
+}
+
+// ref — the method can modify the caller's actual variable
+void ApplyDiscount(ref double price)
+{
+    price = price * 0.9;   // changes the original variable
+}
+
+// out — used when a method needs to return more than one value
+bool TryParseAmount(string input, out double amount)
+{
+    return double.TryParse(input, out amount);
+}
+
+// optional — has a default value if the caller doesn't supply one
+double CalculateTax(double amount, double rate = 0.08)
+{
+    return amount * rate;
+}
+
+// named — the caller specifies which parameter each value belongs to
+double tax = CalculateTax(amount: 100, rate: 0.05);
 csharp
 123456789
 // Defining a methodstatic double CalculateTotal(double price, int quantity){    return price * quantity;} // Calling itdouble total = CalculateTotal(4.50, 3);Console.WriteLine($"Total: ${total:F2}");   // Total: $13.50
