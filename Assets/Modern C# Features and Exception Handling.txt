@@ -1,0 +1,73 @@
+Introduction 
+
+C# has evolved well past the syntax in older tutorials, and this reading covers two of its most useful modern additions, plus the topic that's been unaddressed until now: what happens when something goes wrong. Records give you a cleaner way to model simple data. Pattern matching gets more powerful than the basics from Module 1. Nullable reference types help catch a whole category of bugs before they happen. And exception handling gives the Expense Tracker a way to fail gracefully instead of crashing outright.
+
+Records: value equality, immutability 
+
+A record is a type built specifically for holding data, with two behaviors that regular classes don't give you by default: value equality and immutability.
+
+csharp
+123456
+public record Expense(double Amount, string Category); Expense coffee1 = new Expense(4.50, "Food");Expense coffee2 = new Expense(4.50, "Food"); Console.WriteLine(coffee1 == coffee2);   // true — records compare by value
+
+ With a regular class, coffee1 == coffee2 would be false even with identical data, because classes compare by reference — are these the exact same object in memory? Records compare by value instead — are the contents the same? — which matches how you'd actually expect two expenses with identical data to compare.
+
+Records are also immutable by default: once created, their properties can't be changed. Instead of modifying an existing record, you create a new one based on it using with.
+
+csharp
+12345
+Expense original = new Expense(4.50, "Food");Expense updated = original with { Amount = 5.00 };   // new record, only Amount changes Console.WriteLine(original.Amount);   // 4.50 — untouchedConsole.WriteLine(updated.Amount);    // 5.00 — the new copy
+
+
+Pattern matching: is, type patterns, property patterns 
+
+Module 1 introduced basic pattern matching with switch expressions. C# extends this further with property patterns, which let you match based on the values inside an object's properties, not just the object's type.  
+
+csharp
+1234567891011121314151617
+record Expense(double Amount, string Category); Expense item = new Expense(600, "Travel"); // Type pattern — checks the type and casts in one stepif (item is Expense e){    Console.WriteLine($"It's an expense: {e.Category}");} // Property pattern — matches based on a property's valuestring label = item switch{    { Amount: > 500, Category: "Travel" } => "Major trip expense",    { Category: "Food" } => "Food expense",    _ => "Other expense"};
+
+The property pattern in the switch expression — { Amount: > 500, Category: "Travel" } — checks both conditions on the object's properties at once, without writing a separate if for each one. This becomes especially useful once your data is made of records, since records are designed to be matched against this way.
+
+Nullable reference types: ?, ??, ??=, null-forgiving operator 
+
+A null reference has historically been one of the most common sources of runtime crashes in C#. Nullable reference types let you tell the compiler explicitly which variables are allowed to be null, so it can warn you before a null actually causes a crash.
+
+csharp
+1234567891011
+string? category = null;          // ? marks this as allowed to be nullstring definiteCategory = "Food"; // no ? — the compiler expects this to never be null // ?? — provides a fallback if the left side is nullstring displayCategory = category ?? "Uncategorized"; // ??= — assigns only if the variable is currently nullcategory ??= "Uncategorized"; // Null-forgiving operator (!) — tells the compiler "trust me, this isn't null"string confirmed = category!;
+
+?? and ??= solve the same everyday problem — what to show or use when a value might be missing — without writing a full if check every time. The null-forgiving operator ! should be used sparingly: it doesn't change anything at runtime, it just silences the compiler's warning, so it's only appropriate when you're certain the value can't actually be null at that point.
+
+
+try, catch, finally 
+
+Not every operation succeeds — a file might not exist, user input might not be a valid number, a network call might fail. try/catch lets you attempt an operation and handle the failure gracefully instead of letting the program crash.
+
+csharp
+1234567891011121314
+try{    string input = Console.ReadLine();    double amount = double.Parse(input);    Console.WriteLine($"Amount accepted: ${amount:F2}");}catch (FormatException ex){    Console.WriteLine($"That wasn't a valid number: {ex.Message}");}finally{    Console.WriteLine("Input attempt finished.");}
+
+Code inside try runs normally until something fails. If it throws an exception, execution jumps immediately to a matching catch block — code after the failure inside try never runs. finally runs no matter what happened — whether the try succeeded, failed, or even if the catch block itself threw another exception — which makes it the right place for cleanup that absolutely must happen either way, like closing a file.
+
+Throwing exceptions, custom exception classes 
+
+You can also raise exceptions deliberately with throw, and define your own exception types when the built-in ones (FormatException, ArgumentException) don't describe your specific problem precisely enough.
+
+csharp
+123456789101112131415161718192021
+class NegativeAmountException : Exception{    public NegativeAmountException(string message) : base(message) { }} void SetAmount(double amount){    if (amount < 0)    {        throw new NegativeAmountException("Expense amount cannot be negative.");    }} try{    SetAmount(-50);}catch (NegativeAmountException ex){    Console.WriteLine($"Invalid expense: {ex.Message}");}
+
+A custom exception class is just a regular class that inherits from Exception — : base(message) passes the message up to the built-in Exception machinery so things like ex.Message work the same way they do for any built-in exception. Defining NegativeAmountException specifically, rather than throwing a generic Exception, lets calling code catch exactly this problem without accidentally catching every other kind of failure too.
+
+When to catch vs. let bubble 
+
+Not every exception should be caught the moment it happens. Catching too early — and too broadly — can hide real bugs instead of fixing them.
+
+
+A method deep inside the Expense Tracker that parses a file probably shouldn't decide what message to show the user — it should let the exception bubble up to the part of the program that's actually talking to them. Catching an exception you can't do anything useful with, just to silence it, is one of the most common ways real bugs get hidden until much later.
+
+Summary
+
+
+With records, richer pattern matching, nullable safety, and proper exception handling in place, the Expense Tracker can now model data cleanly and fail gracefully instead of crashing. Next up: file I/O and async programming — giving the tracker the ability to actually save and load expense data between sessions.  

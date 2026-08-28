@@ -48,8 +48,15 @@ try
     }
 
     int amount = int.Parse(input);
+    if(amount <= 0){
+        throw new InvalidExpenseException("Expense amount must be greater than zero");
+    }
 
     Console.WriteLine($"Expense amount: {amount}");
+}
+catch(InvalidExpenseException ex){
+    Console.WriteLine(ex.Message);
+
 }
 catch (FormatException)
 {
