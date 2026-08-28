@@ -8,8 +8,8 @@ namespace EventHub.Controllers;
     "api/[controller]"
 )]
 public class EventsController : ControllerBase{
-    private readonly EventService _eventService;
-    public EventsController(EventService eventService){
+    private readonly IEventService _eventService;
+    public EventsController(IEventService eventService){
         _eventService = eventService;
     }
     [HttpGet]

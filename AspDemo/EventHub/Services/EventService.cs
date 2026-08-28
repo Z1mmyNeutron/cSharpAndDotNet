@@ -2,7 +2,7 @@ using EventHub.Models;
 
 namespace EventHub.Services;
 
-public class EventService{
+public class EventService : IEventService {
     private readonly List<Event> _events = new List<Event> {
     new Event(1, "Tech Meetup", "Bangalore", new DateTime(2026, 7, 15)),
     new Event(2, "AI Workshop", "Hyperbad", new DateTime(2026, 9, 18)),

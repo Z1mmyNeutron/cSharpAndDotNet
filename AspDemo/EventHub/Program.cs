@@ -4,7 +4,7 @@ using EventHub.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddSingleton<EventService>();
+builder.Services.AddSingleton<IEventService, EventService>();
 builder.Services.AddControllers();
 
 
@@ -22,7 +22,7 @@ app.Use(async(context, next) =>{
 
 app.MapControllers();
 // app.MapGet("/events", () => events);
-app.MapGet("/events", (EventService eventService) => eventService.GetAllEvents());
+
 
 app.Run();
 

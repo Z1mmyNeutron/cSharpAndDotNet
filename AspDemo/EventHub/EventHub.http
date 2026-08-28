@@ -2,9 +2,9 @@
 
 GET {{EventHub_HostAddress}}/api/events
 
-GET{{EventHub_HostAddress}}/api/events/1
+GET {{EventHub_HostAddress}}/api/events/1
 
-GET{{EventHub_HostAddress}}/api/events/99
+
 
 
 Accept: application/json
