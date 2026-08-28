@@ -17,21 +17,41 @@ string expenseCategory = updatedExpense.Amount switch{
 };
 
 
-Console.WriteLine("Expense Details");
-Console.WriteLine(lunchExpense);
-Console.WriteLine();
-Console.WriteLine(internetExpense);
-Console.WriteLine();
-Console.WriteLine(updatedExpense);
-Console.WriteLine();
-Console.WriteLine($"Expense Category: {expenseCategory}");
+// Console.WriteLine("Expense Details");
+// Console.WriteLine(lunchExpense);
+// Console.WriteLine();
+// Console.WriteLine(internetExpense);
+// Console.WriteLine();
+// Console.WriteLine(updatedExpense);
+// Console.WriteLine();
+// Console.WriteLine($"Expense Category: {expenseCategory}");
 
-string? notes = null;
+// string? notes = null;
 
-Console.WriteLine();
-Console.WriteLine("Expense Notes");
-if(notes is not null){
-    Console.WriteLine(notes);
-}else{
-    Console.WriteLine("No notes available");
+// Console.WriteLine();
+// Console.WriteLine("Expense Notes");
+// if(notes is not null){
+//     Console.WriteLine(notes);
+// }else{
+//     Console.WriteLine("No notes available");
+// }
+try
+{
+    Console.Write("Enter Expense amount: ");
+
+    string? input = Console.ReadLine();
+
+    if (input is null)
+    {
+        Console.WriteLine("No input provided");
+        return;
+    }
+
+    int amount = int.Parse(input);
+
+    Console.WriteLine($"Expense amount: {amount}");
+}
+catch (FormatException)
+{
+    Console.WriteLine("Please enter a valid numeric value");
 }
