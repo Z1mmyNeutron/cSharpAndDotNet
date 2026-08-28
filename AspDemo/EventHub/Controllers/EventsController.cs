@@ -16,4 +16,12 @@ public class EventsController : ControllerBase{
     public IActionResult GetAll(){
         return Ok(_eventService.GetAllEvents());
         }
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id){
+        var foundEvent = _eventService.GetAllEvents().FirstOrDefault(e => e.Id == id);
+        if(foundEvent == null){
+            return NotFound();
+        }
+        return Ok(foundEvent);
+    }
 }
