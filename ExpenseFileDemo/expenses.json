@@ -1,0 +1,5 @@
+[
+  { "Title": "Lunch", "Amount": 350, "Category": "Food" },
+  { "Title": "Taxi", "Amount": 450, "Category": "Travel" },
+  { "Title": "Internet Bill", "Amount": 999, "Category": "Utilities" }
+]

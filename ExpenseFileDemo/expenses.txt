@@ -1,0 +1,3 @@
+Lunch, 350, Food
+Taxi, 450, Travel
+Internet Bill, 999, Utilities
