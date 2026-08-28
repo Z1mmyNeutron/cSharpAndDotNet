@@ -1,0 +1,35 @@
+0:00
+/
+2:41
+
+1x
+
+
+Introduction
+
+Dependency Injection (DI) is built into ASP.NET Core at a foundational level. Rather than having classes construct their own dependencies, the framework's built-in container creates and supplies them, allowing components to focus on their own responsibilities rather than object construction.
+
+While using DI itself is straightforward, applying it well requires understanding service lifetimes, injection patterns, and a handful of common pitfalls that can otherwise lead to subtle bugs and hard-to-diagnose failures in production.
+
+Why Dependency Injection Matters
+
+DI decouples a class from the concrete implementations it depends on, which makes code easier to test, easier to extend, and easier to reason about. Swapping an implementation, such as replacing a real email service with a mock during testing, becomes a configuration change rather than a code change.
+
+Choosing the Right Service Lifetime
+
+ASP.NET Core supports three lifetimes: Transient, Scoped, and Singleton. Transient services are created every time they are requested and suit lightweight, stateless services. Scoped services are created once per client request and are the right choice for anything tied to a unit of work, such as a database context. Singleton services are created once for the lifetime of the application and are appropriate for stateless, thread-safe services such as configuration or caching.
+
+Choosing the wrong lifetime is one of the most common DI mistakes, and it can introduce concurrency issues or unexpected shared state across requests.
+
+Constructor Injection as the Default
+
+Constructor injection, where dependencies are declared as constructor parameters, is the preferred pattern because it makes a class's dependencies explicit and guarantees the object cannot be constructed in an invalid state. Property injection or service location should be reserved for rare edge cases.
+
+Avoiding the Captive Dependency Problem
+
+A common pitfall is injecting a Scoped or Transient service into a Singleton, which effectively captures the shorter-lived service for the entire lifetime of the application. This is known as a captive dependency and can cause a database context, for example, to be reused far longer than intended, leading to stale data or connection errors.
+
+Conclusion
+
+Dependency Injection is central to how ASP.NET Core applications are structured. Following best practices around lifetime selection, constructor injection, and avoiding captive dependencies leads to applications that are easier to test, safer under concurrent load, and simpler to maintain over time.
+
