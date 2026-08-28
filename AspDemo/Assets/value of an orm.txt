@@ -1,0 +1,27 @@
+Introduction
+
+Entity Framework Core (EF Core) is Microsoft's modern object-relational mapper (ORM) for .NET. It allows developers to work with a relational database using ordinary .NET objects and LINQ queries, rather than writing raw SQL for every data access operation.
+
+The Value of an ORM
+
+By translating LINQ queries into SQL and mapping result sets back into strongly typed objects, EF Core removes a significant amount of repetitive data access code. This lets developers reason about their data in terms of the application's domain model rather than database tables and columns.
+
+DbContext and DbSet
+
+The DbContext class represents a session with the database and is the primary point of interaction with EF Core. Each DbSet property on a context represents a table and provides methods for querying and saving instances of that entity type. A DbContext is typically registered as a Scoped service, so that it lives for the duration of a single request.
+
+Change Tracking
+
+EF Core automatically tracks changes made to entities retrieved from the database. When SaveChanges is called, it compares the current state of tracked entities against their original values and generates the appropriate INSERT, UPDATE, or DELETE statements. Understanding change tracking is important for avoiding unnecessary database round trips or accidentally persisting unintended changes.
+
+Migrations
+
+Migrations allow the database schema to evolve alongside the application's model classes in a controlled, versioned way. Each migration represents an incremental set of schema changes and can be applied or rolled back, which makes it possible to keep a team's databases, and multiple environments in sync as the model changes over time.
+
+Query Performance Considerations
+
+Because LINQ queries are convenient to write, it is easy to unintentionally generate inefficient SQL, such as retrieving more data than necessary or triggering the N+1 query problem when navigation properties are lazily loaded in a loop. Being deliberate about eager loading with Include, and profiling generated SQL, are important habits for production applications.
+
+Conclusion
+
+EF Core provides a productive, strongly typed way to work with relational data, but it is not a black box. Understanding how the DbContext, change tracking, and migrations work underneath the convenient LINQ syntax is what allows developers to use it effectively at scale.
