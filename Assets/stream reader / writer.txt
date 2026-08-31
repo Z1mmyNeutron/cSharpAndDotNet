@@ -1,0 +1,66 @@
+// File class — simplest option, whole file at once
+File.WriteAllText("expenses.txt", "Coffee, 4.50, Food");
+string contents = File.ReadAllText("expenses.txt");
+
+// StreamWriter — write line by line, useful inside a loop
+using (StreamWriter writer = new StreamWriter("expenses.txt"))
+{
+    writer.WriteLine("Coffee, 4.50, Food");
+    writer.WriteLine("Taxi, 18.00, Travel");
+}
+
+// StreamReader — read line by line
+using (StreamReader reader = new StreamReader("expenses.txt"))
+{
+    string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+        Console.WriteLine(line);
+    }
+}
+
+
+List<Expense> expenses = new List<Expense>
+{
+    new Expense(4.50, "Food"),
+    new Expense(18.00, "Travel")
+};
+
+// Writing each expense as one line
+using (StreamWriter writer = new StreamWriter("expenses.txt"))
+{
+    foreach (var expense in expenses)
+    {
+        writer.WriteLine($"{expense.Amount},{expense.Category}");
+    }
+}
+
+// Reading and rebuilding the expenses from those lines
+List<Expense> loaded = new List<Expense>();
+using (StreamReader reader = new StreamReader("expenses.txt"))
+{
+    string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+        string[] parts = line.Split(',');
+        double amount = double.Parse(parts[0]);
+        string category = parts[1];
+        loaded.Add(new Expense(amount, category));
+    }
+}
+
+using System.Text.Json;
+
+List<Expense> expenses = new List<Expense>
+{
+    new Expense(4.50, "Food"),
+    new Expense(18.00, "Travel")
+};
+
+// Serialize — object to JSON text
+string json = JsonSerializer.Serialize(expenses);
+File.WriteAllText("expenses.json", json);
+
+// Deserialize — JSON text back into real objects
+string loadedJson = File.ReadAllText("expenses.json");
+List<Expense> loaded = JsonSerializer.Deserialize<List<Expense>>(loadedJson);
