@@ -1,0 +1,119 @@
+This is the foundation of why async and await exist in C#, so let's make it really simple.
+Blocking means a worker is stuck waiting around instead of being available to do something else.
+🍕 Imagine a restaurant with one employee
+You're the employee.
+A customer orders a pizza, so you put it in the oven.
+
+It takes 15 minutes to cook.
+
+There are two ways you could handle this.
+
+Option A: Blocking
+
+You put the pizza in and then stand directly in front of the oven for 15 minutes.
+
+Put pizza in oven
+       ↓
+😐 wait...
+😐 wait...
+😐 wait...
+       ↓
+Pizza done!
+       ↓
+Help next customer
+During those 15 minutes, you can't take another order, clean a table, or do anything else.
+That's similar to blocking a thread.
+
+💻 Now imagine reading a file
+Your program says:
+string text = File.ReadAllText("expenses.json");
+The CPU doesn't necessarily have the data immediately.
+The operating system may need to access storage and retrieve it.
+
+Conceptually:
+
+C# Thread
+   ↓
+"Give me expenses.json"
+   ↓
+Storage 💾
+   ↓
+   ⏳
+   ⏳
+   ⏳
+   ↓
+"Here you go!"
+   ↓
+Continue running code
+With synchronous ReadAllText, the thread waits for that operation to finish.
+That's blocking.
+
+Why is blocking bad?
+For a tiny console application, you might barely notice.
+But imagine a desktop app.
+
+You click:
+
+LOAD EXPENSES
+If the UI thread performs a slow blocking operation, that same thread may also be responsible for things like buttons, animations, scrolling, and responding to clicks.
+Now it's busy waiting.
+
+The application can appear:
+
+❄️ FROZEN
+Even though it hasn't actually crashed!
+🌐 It gets even more important with servers
+Imagine a web server receiving thousands of requests.
+If lots of threads spend their time doing this:
+
+Thread 1 → waiting for file 💾 😴
+Thread 2 → waiting for database 🗄️ 😴
+Thread 3 → waiting for API 🌐 😴
+Thread 4 → waiting for file 💾 😴
+those threads aren't available to do other useful work.
+That's wasteful because the CPU isn't necessarily doing anything difficult.
+
+It's just waiting.
+
+⚡ Enter async and await
+Instead of:
+string text = File.ReadAllText("expenses.json");
+you've been using:
+string text =
+    await File.ReadAllTextAsync("expenses.json");
+Very simplified, await is saying:
+"Start this operation. While we're waiting, don't unnecessarily hold this thread hostage. Continue this method when the operation is finished."
+Back to our restaurant:
+Put pizza in oven 🍕
+       ↓
+Don't stand there staring at it
+       ↓
+Worker can handle other work
+       ↓
+🔔 DING!
+       ↓
+Pizza is ready
+       ↓
+Continue handling the pizza
+That's the big advantage.
+One important misconception
+async does not simply mean:
+"Make my code faster."
+Reading a file doesn't magically become faster because you used:
+await File.ReadAllTextAsync(...)
+If the storage takes 2 seconds, it may still take roughly 2 seconds.
+The benefit is:
+
+Your program can use its resources more efficiently while it's waiting.
+That's especially important for responsive UIs and scalable servers.
+🧠 The simple version to remember
+Synchronous/blocking:
+"Do this and WAIT HERE until it's done."
+File.ReadAllText("expenses.json");
+Asynchronous/non-blocking waiting:
+await File.ReadAllTextAsync("expenses.json");
+So if your course asks:
+What's the cost of blocking?
+A strong answer would be:
+Blocking causes a thread to sit idle while waiting for an operation such as file I/O to complete. Since that thread cannot perform other work during the wait, excessive blocking can waste resources and make applications less responsive or less scalable. Asynchronous programming allows the program to wait for I/O without unnecessarily blocking a thread.
+The restaurant analogy is the one I'd keep in your head: don't pay an employee to stare at the oven. 🍕

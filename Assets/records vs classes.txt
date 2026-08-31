@@ -1,0 +1,82 @@
+Classes: reference equality
+With a normal class, two objects are considered equal by default only if they are literally the same object in memory.
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+Person p1 = new Person { Name = "Christina", Age = 25 };
+Person p2 = new Person { Name = "Christina", Age = 25 };
+
+Console.WriteLine(p1 == p2); // False
+Even though p1 and p2 contain identical data, they were created with two separate new Person calls.
+Conceptually:
+
+p1 ──────> Object A
+           Name = Christina
+           Age = 25
+
+p2 ──────> Object B
+           Name = Christina
+           Age = 25
+So C# essentially asks:
+"Do p1 and p2 point to the same object?"
+No → false.
+But:
+
+Person p1 = new Person { Name = "Christina", Age = 25 };
+Person p2 = p1;
+
+Console.WriteLine(p1 == p2); // True
+Now:
+p1 ──────┐
+         ├──> Object A
+p2 ──────┘    Name = Christina
+              Age = 25
+They're references to the same object, so they're equal.
+Records: value equality
+Records work differently.
+public record Person(string Name, int Age);
+
+Person p1 = new Person("Christina", 25);
+Person p2 = new Person("Christina", 25);
+
+Console.WriteLine(p1 == p2); // True
+These are still two separate objects.
+But records essentially ask:
+
+"Do these objects contain the same values?"
+p1 ──────> Object A
+           Name = Christina
+           Age = 25
+
+p2 ──────> Object B
+           Name = Christina
+           Age = 25
+Different objects, but:
+Name == Name  ✓
+Age  == Age   ✓
+
+Therefore:
+
+p1 == p2  → true
+That's value equality.
+Practical difference
+Imagine you're making an expense tracker:
+public record Expense(string Title, decimal Amount, string Category);
+
+Expense e1 = new("Lunch", 25, "Food");
+Expense e2 = new("Lunch", 25, "Food");
+
+Console.WriteLine(e1 == e2);
+With a record, that's true because the expenses contain the same data.
+If Expense were a normal class, it would ordinarily be false because they're two separately created objects.
+
+So a useful mental model is:
+
+Class: "Are these the same thing?"
+
+Record: "Do these represent the same data?"
+
+That's one major reason records are great for things like DTOs, API responses, configuration objects, coordinates, and other data-centric models.

@@ -1,0 +1,116 @@
+Now, let's move on to File I/O and Asynchronous Programming. Why is it important for data to be persisted for it to survive beyond a single program run?
+
+Definitely. This one is actually pretty simple once you understand what happens when your program stops running.
+Persistence means saving data somewhere that still exists after your program closes.
+🧠 Imagine your program has a whiteboard
+Let's use your expense tracker:
+List<Expense> expenses = new()
+{
+    new Expense("Lunch", 25, "Food"),
+    new Expense("Taxi", 40, "Travel")
+};
+While your program is running, those expenses exist in your computer's memory (RAM).
+Think of RAM like a whiteboard:
+
+PROGRAM RUNNING 🟢
+
+RAM / Whiteboard
+┌────────────────────┐
+│ Lunch  $25  Food   │
+│ Taxi   $40  Travel │
+└────────────────────┘
+Your program can read them, change them, add new ones, etc.
+Then you close the program.
+
+💥 The whiteboard gets erased.
+
+When you run the program again:
+
+PROGRAM STARTS AGAIN 🟢
+
+RAM / Whiteboard
+┌────────────────────┐
+│                    │
+│       EMPTY        │
+│                    │
+└────────────────────┘
+The new program run doesn't automatically remember what happened during the previous run.
+💾 Persistence is like writing it in a notebook
+If you want those expenses to survive, you need to store them somewhere persistent, such as:
+a file
+a database
+cloud storage
+For example, you're currently learning how to save expenses as JSON:
+string jsonData = JsonSerializer.Serialize(expenses);
+
+File.WriteAllText("expenses.json", jsonData);
+Now you've taken the information from your temporary whiteboard and written it into a permanent notebook:
+RAM                         FILE
+Temporary                   Persistent
+─────────                   ──────────
+
+Lunch $25 ───────────────→ expenses.json
+Taxi  $40                  ┌─────────────┐
+                           │ Lunch $25   │
+                           │ Taxi  $40   │
+                           └─────────────┘
+
+     PROGRAM CLOSES ❌
+
+RAM gets erased              File remains ✅
+Then tomorrow, when you start your program again, you can read the notebook:
+string jsonData = File.ReadAllText("expenses.json");
+And reconstruct your objects:
+List<Expense>? expenses =
+    JsonSerializer.Deserialize<List<Expense>>(jsonData);
+So you're essentially doing:
+PROGRAM RUN #1
+
+Create objects
+      ↓
+    RAM
+      ↓
+Save to expenses.json 💾
+      ↓
+Program closes
+
+
+PROGRAM RUN #2
+
+Program starts
+      ↓
+Read expenses.json 📖
+      ↓
+Create objects in RAM again
+      ↓
+Continue where we left off
+Why does this matter?
+Imagine if your banking app didn't persist data.
+You deposit $500:
+
+Balance: $500
+Close the app.
+Open it again:
+
+Balance: $0
+😭
+Obviously, that wouldn't work.
+
+Your expense tracker has the same basic problem. Creating:
+
+new Expense("Lunch", 25, "Food")
+only creates that information for the current program run.
+Saving it:
+
+File.WriteAllText("expenses.json", jsonData);
+makes the information available after that run ends.
+🧠 The one thing I'd memorize
+RAM = whiteboard. Temporary.
+Persistent storage = notebook. Survives after the program closes.
+
+So when your course asks:
+
+"Why must data be persisted?"
+A solid answer is:
+Data needs to be persisted because variables and objects stored in memory only exist while the program is running. Saving the data to persistent storage, such as a file or database, allows it to be retrieved during future program runs.
+That's really the entire concept of persistence.

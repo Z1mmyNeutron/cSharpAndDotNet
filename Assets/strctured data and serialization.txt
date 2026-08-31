@@ -1,0 +1,164 @@
+Let's consider Structured Data and Serialization. What is the distinction between reading and writing plain text to a file versus working with structured formats, and how does serialization help convert objects into a storable representation?
+Absolutely. This connects directly to what you were just doing with expenses.json.
+Think of it like this:
+
+Plain text = writing information down for a human.
+Structured data = writing information down in an organized format that a computer can easily reconstruct.
+Suppose you have this C# object:
+Expense expense = new("Lunch", 25, "Food");
+You could save it to a text file like this:
+File.WriteAllText("expense.txt", "Lunch, 25, Food");
+Your file would contain:
+Lunch, 25, Food
+That's perfectly valid text.
+But when you read it back:
+string data = File.ReadAllText("expense.txt");
+C# only knows:
+"I have a string."
+It doesn't automatically know that:
+Lunch → Title
+25    → Amount
+Food  → Category
+You'd have to figure that out yourself.
+For example, you might split the string:
+string[] parts = data.Split(',');
+
+string title = parts[0];
+decimal amount = decimal.Parse(parts[1]);
+string category = parts[2];
+That can get annoying very quickly.
+📦 Structured data
+Instead, we can use a format like JSON.
+The same expense could be stored as:
+{
+    "Title": "Lunch",
+    "Amount": 25,
+    "Category": "Food"
+}
+Now the data has structure.
+It's basically labeled:
+Title    → Lunch
+Amount   → 25
+Category → Food
+That makes it much easier for programs to understand what each piece represents.
+And if you have multiple expenses:
+[
+    {
+        "Title": "Lunch",
+        "Amount": 25,
+        "Category": "Food"
+    },
+    {
+        "Title": "Taxi",
+        "Amount": 40,
+        "Category": "Travel"
+    }
+]
+JSON understands:
+"This is a list containing two objects, and each object has a Title, Amount, and Category."
+🔄 This is where serialization comes in
+Serialization sounds intimidating, but it basically means:
+Turn my C# object into something I can save.
+You start with an actual C# object:
+Expense expense = new("Lunch", 25, "Food");
+That object exists in your program's memory.
+You can't literally shove the C# object into a text file. So you serialize it:
+string json = JsonSerializer.Serialize(expense);
+Now you've gone from:
+C# OBJECT
+    ↓
+Expense
+Title = Lunch
+Amount = 25
+Category = Food
+
+    ↓ SERIALIZE 📦
+
+JSON TEXT
+    ↓
+        ↓
+{
+  "Title": "Lunch",
+  "Amount": 25,
+  "Category": "Food"
+}
+That JSON is just text, which means you can save it:
+File.WriteAllText("expense.json", json);
+And going backward is deserialization
+Later, maybe after you've closed and reopened your program, you read the file:
+string json = File.ReadAllText("expense.json");
+Right now it's still just text.
+You want an Expense object again.
+
+So you deserialize:
+
+Expense? expense =
+    JsonSerializer.Deserialize<Expense>(json);
+Think:
+JSON TEXT
+    ↓
+DESERIALIZE 📦➡️
+    ↓
+C# OBJECT
+    ↓
+Expense
+Title = Lunch
+Amount = 25
+Category = Food
+🧠 The easiest way to remember the words
+Think of serialization as packing a suitcase. 🧳
+You have your C# object:
+
+👕 👖 👟 🧦
+You need to transport/store it, so you serialize it:
+👕 👖 👟 🧦
+      ↓
+   PACK 📦
+      ↓
+    🧳
+Later, you deserialize it:
+    🧳
+     ↓
+  UNPACK 📦
+     ↓
+👕 👖 👟 🧦
+In C#:
+// PACK
+string json = JsonSerializer.Serialize(expenses);
+
+// SAVE
+await File.WriteAllTextAsync("expenses.json", json);
+Then later:
+// LOAD
+string json = await File.ReadAllTextAsync("expenses.json");
+
+// UNPACK
+List<Expense>? expenses =
+    JsonSerializer.Deserialize<List<Expense>>(json);
+So the whole process you've been learning is:
+C# Objects
+    ↓
+SERIALIZE
+    ↓
+JSON
+    ↓
+WRITE TO FILE 💾
+    ↓
+  [program closes]
+    ↓
+READ FROM FILE 📖
+    ↓
+JSON
+    ↓
+DESERIALIZE
+    ↓
+C# Objects
+Persistence is the overall goal: "I want my data to survive after my program closes."
+JSON is the structured format: "Here's an organized way to represent my data."
+
+Serialization is the conversion: "Turn my C# objects into JSON."
+
+Deserialization is the reverse: "Turn that JSON back into my C# objects."
+
+Those four ideas are essentially what your expense tracker code is putting together.
+

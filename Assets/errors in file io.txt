@@ -1,0 +1,74 @@
+Now, let's think about potential issues. When performing file operations, why can they fail, and which common failure conditions must developers anticipate and handle?
+File operations can fail because your program is depending on something outside itself: the computer’s file system. Your code may be correct, but the file, folder, permissions, disk, or another program can still cause problems.
+A simple way to think about it is:
+
+“I asked the computer to get or save a file, but something prevented it.”
+Common failures include:
+the file doesn’t exist
+the folder/path is wrong
+your program doesn’t have permission
+another program is using or locking the file
+the disk is full
+the filename/path is invalid
+the file is corrupted or contains unexpected data
+the drive or network location becomes unavailable
+For example:
+string text = File.ReadAllText("expenses.json");
+This assumes expenses.json exists.
+If it doesn't, C# can throw:
+
+FileNotFoundException
+So you might handle that:
+try
+{
+    string text = File.ReadAllText("expenses.json");
+}
+catch (FileNotFoundException)
+{
+    Console.WriteLine("The expense file does not exist yet.");
+}
+Permissions can also cause a problem:
+File.WriteAllText("/protected-folder/expenses.json", json);
+Your program might not be allowed to write there, which can produce an:
+UnauthorizedAccessException
+And sometimes the broader file system just can't complete the request:
+catch (IOException)
+{
+    Console.WriteLine("There was a problem accessing the file.");
+}
+One especially important case for your expense tracker is bad JSON.
+Suppose the file contains:
+
+THIS IS DEFINITELY NOT JSON 😂
+Then:
+JsonSerializer.Deserialize<List<Expense>>(json);
+can fail with a:
+JsonException
+So a realistic version might look like:
+try
+{
+    string json = await File.ReadAllTextAsync("expenses.json");
+
+    List<Expense>? expenses =
+        JsonSerializer.Deserialize<List<Expense>>(json);
+}
+catch (FileNotFoundException)
+{
+    Console.WriteLine("No saved expenses found.");
+}
+catch (JsonException)
+{
+    Console.WriteLine("The expense file contains invalid data.");
+}
+catch (UnauthorizedAccessException)
+{
+    Console.WriteLine("You don't have permission to access this file.");
+}
+catch (IOException)
+{
+    Console.WriteLine("There was a problem reading the file.");
+}
+The key idea is:
+File operations can fail even when your code is logically correct, because files depend on external resources and conditions.
+So developers should especially anticipate missing files, invalid paths, permission problems, unavailable or locked files, storage problems, and malformed data.
+And this is exactly why file I/O and exception handling are often taught together: once your program starts talking to the outside world, failure becomes something you have to expect rather than assume will never happen.

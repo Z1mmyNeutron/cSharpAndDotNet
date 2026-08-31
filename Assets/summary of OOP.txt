@@ -1,0 +1,67 @@
+What this module covered 
+
+Module 2 gave the Expense Tracker structure — objects, collections, queries. Module 3 made it real. Three lessons, each closing a gap that stood between a working prototype and something genuinely usable: modern C# features and exception handling so the program models data cleanly and fails gracefully, file I/O and async programming so it actually remembers what you entered, and finally testing and Git so that work is verified and protected. By the end of this module, the Expense Tracker isn't a teaching exercise anymore — it's a small, complete, production-shaped application.  
+
+
+Modern features and graceful failure 
+
+Lesson 3.1 gave the Expense Tracker two kinds of upgrade at once: cleaner ways to model data, and a real plan for when things go wrong. record types replaced plain classes for data like Expense wherever identity didn't matter as much as content — two records with identical Amount and Category compare equal by value, and with creates a modified copy instead of mutating the original. Pattern matching grew past the basic switch from Module 1 into property patterns like { Amount: > 500, Category: "Travel" }, matching directly on an object's values rather than just its type. Nullable reference types — ?, ??, ??= — let the compiler flag a possible null before it ever caused a crash, closing off one of C#'s oldest sources of runtime errors.
+
+The other half of this lesson was about failure itself. try/catch/finally let the program attempt something risky and recover instead of crashing outright, with finally guaranteeing cleanup ran no matter what happened. Custom exception classes like NegativeAmountException described a specific problem precisely, rather than forcing every caller to catch a generic, ambiguous Exception. And the judgment call mattered just as much as the mechanics: catch where you can actually do something useful with the failure, and let it bubble up to a caller with more context otherwise.
+
+csharp
+1234567891011121314151617
+// Lesson 3.1, in one block: a record, validated, with graceful failurepublic record Expense(double Amount, string Category); void Validate(Expense expense){    if (expense.Amount < 0)        throw new NegativeAmountException("Expense amount cannot be negative.");} try{    Validate(new Expense(-20, "Food"));}catch (NegativeAmountException ex){    Console.WriteLine($"Invalid expense: {ex.Message}");}
+
+Persistence without freezing the program 
+
+Lesson 3.2 solved the one gap that had been there since Lesson 1.1: nothing the Expense Tracker stored ever survived closing the program. File, StreamReader, and StreamWriter covered the basics of reading and writing text directly, but System.Text.Json's Serialize and Deserialize became the real answer — converting a full List<Expense> to and from JSON automatically, without hand-parsing a single line or breaking the moment a new property got added to Expense.
+
+The second half of the lesson made sure that saving and loading didn't come at the cost of a frozen program. Blocking I/O stops everything until a file operation finishes; async and await let that wait happen in the background while the rest of the program keeps running, with Task and Task<T> representing work that's in progress but not finished yet. Nearly every file method had an async counterpart — WriteAllTextAsync, ReadAllTextAsync — and the pattern was always the same: wrap the file call in an async Task method, and await it from wherever it's needed.
+
+csharp
+123456789101112
+// Lesson 3.2, in one block: save and load, asynchronously, as JSONasync Task SaveExpensesAsync(List<Expense> expenses){    string json = JsonSerializer.Serialize(expenses);    await File.WriteAllTextAsync("expenses.json", json);} async Task<List<Expense>> LoadExpensesAsync(){    string json = await File.ReadAllTextAsync("expenses.json");    return JsonSerializer.Deserialize<List<Expense>>(json);}
+
+Proving it works, and protecting it 
+
+Lesson 3.3 closed the course with the two practices that separate a finished personal project from professional software. xUnit gave the Expense Tracker an automated way to verify its own correctness: [Fact] for a single fixed case, [Theory] with [InlineData] for the same test run across multiple inputs, and Assert.Equal (among others) to check the outcome — all structured around Arrange-Act-Assert, set up, run, then check. A passing test suite meant confidence to keep changing the codebase without fear of silently breaking something built three modules ago.
+
+Git and GitHub protected that work and made it shareable. A repository tracked every change as a history of commits, each one a deliberate, named snapshot rather than an automatic save. Branches allowed new work — like the async file I/O from Lesson 3.2 — to be built without touching what already worked, then merged back in once it was ready. push, pull, and clone connected that local history to GitHub, turning the finished Expense Tracker into something with a real, reviewable home outside your own machine.
+
+
+The capstone: every module, one project 
+
+The Expense Tracker capstone isn't a tenth lesson bolted onto the end — it's the same Expense class from Lesson 2.2, the same List<Expense> and LINQ queries from Lesson 2.3, now wrapped in the records, validation, async persistence, and tests built across this module. Nothing earlier gets thrown away; every concept from Module 1 onward is still doing real work in the finished application.  
+
+Summary  
+
+// Lesson 3.1, in one block: a record, validated, with graceful failure
+public record Expense(double Amount, string Category);
+
+void Validate(Expense expense)
+{
+    if (expense.Amount < 0)
+        throw new NegativeAmountException("Expense amount cannot be negative.");
+}
+
+try
+{
+    Validate(new Expense(-20, "Food"));
+}
+catch (NegativeAmountException ex)
+{
+    Console.WriteLine($"Invalid expense: {ex.Message}");
+}
+
+
+That closes Module 3, and the course with it. The Expense Tracker that started as a single Console.WriteLine in Lesson 1.1 is now a tested, version-controlled, asynchronously-persisted application — every one of the nine lessons in this course is a layer still present in it, working together rather than left behind.  
+
+Mark as completed
+
+Like
+
+Dislike
+
+Report an issue
+

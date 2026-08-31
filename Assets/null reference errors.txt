@@ -1,0 +1,129 @@
+Now, let's shift our focus to Nullability and Exception Handling. Can you explain what nullable reference types are and why they are important in preventing common programming errors?
+Absolutely. This one sounds much more complicated than it actually is. The big idea is:
+Nullable reference types help C# warn you: “Hey… this variable might contain nothing. Are you sure your code can handle that?”
+First: what is null? 👻
+Imagine we have:
+string name = "Christina";
+name contains a string.
+But sometimes a variable might contain nothing:
+
+string? name = null;
+null basically means:
+“There is no object here.”
+The ? tells C#:
+"I know this variable might be null. That's intentional."
+So:
+string name;
+means:
+"I expect name to contain a string."
+While:
+string? name;
+means:
+"This might contain a string, OR it might contain null."
+Why does C# care?
+Imagine:
+string? name = null;
+
+Console.WriteLine(name.Length);
+We're asking:
+"Hey C#, how many characters are in name?"
+C# is looking at us like:
+"...what name? There isn't one. 😭"
+If that actually executes without protection, you can get the infamous:
+NullReferenceException
+This is an extremely common programming error.
+Nullable reference types help catch this BEFORE the program runs
+Because you wrote:
+string? name
+C# knows name could be null.
+So when you try:
+
+Console.WriteLine(name.Length);
+your IDE/compiler can warn you:
+⚠️ name might be null.
+That's the important part.
+Nullable reference types don't magically eliminate null.
+
+They help C# track where null might exist so it can warn you before you accidentally use it.
+
+So what do we do about it?
+One option is simply checking:
+if (name != null)
+{
+    Console.WriteLine(name.Length);
+}
+Now C# understands:
+Could name be null?
+       ↓
+      YES
+       ↓
+Check it first
+       ↓
+if (name != null)
+       ↓
+Inside here, C# knows:
+"Okay! We definitely have a string."
+And pattern matching gives us another nice way:
+if (name is not null)
+{
+    Console.WriteLine(name.Length);
+}
+Same basic idea.
+There's also ?.
+You'll see this all the time:
+Console.WriteLine(name?.Length);
+The ?. basically means:
+"Do this ONLY if the thing before me isn't null."
+So if:
+name = "Christina";
+you get:
+9
+But if:
+name = null;
+C# doesn't try to access .Length. The result is simply null.
+And ?? gives you a backup
+Another extremely useful operator is:
+??
+Think:
+"If the thing on the left is null, use this instead."
+For example:
+string? name = null;
+
+string displayName = name ?? "Guest";
+C# asks:
+Is name null?
+
+YES
+ ↓
+Use "Guest"
+So:
+Console.WriteLine(displayName);
+prints:
+Guest
+If instead:
+string? name = "Christina";
+
+string displayName = name ?? "Guest";
+you get:
+Christina
+The main thing to remember
+When you see:
+string?
+don't overthink it.
+Read the ? as "maybe."
+
+string name
+"There should be a string."
+string? name
+"Maybe there's a string. Maybe there's nothing."
+And because C# knows it's a maybe, it can warn you when you do something potentially dangerous with it.
+That's the entire reason nullable reference types are useful: they turn a lot of potential runtime crashes into compiler warnings you can catch while you're writing the code.
+
+You'll especially want to remember these three:
+
+string? name;             // Might be null
+
+name?.Length;             // Use it only if it's not null
+
+name ?? "Guest";          // If null, use "Guest" instead
+Once those three feel natural, you've got most of what you'll use day-to-day with nullable reference types.

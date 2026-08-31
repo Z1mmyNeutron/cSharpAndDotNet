@@ -1,0 +1,134 @@
+Now, let's move on to Exception Handling. How does an exception differ from an ordinary return value in C#, and why are exceptions typically reserved for signaling exceptional conditions rather than normal program flow?
+Absolutely. The easiest way to think about it is:
+A return value says, “Here’s the answer.”
+An exception says, “Something went wrong, and I can't give you the normal answer.”
+🍕 Imagine ordering pizza
+You have a method:
+int Add(int a, int b)
+{
+    return a + b;
+}
+When you call:
+int result = Add(5, 3);
+the method does its normal job and hands you back:
+8
+That's a return value.
+It's expected. Nothing unusual happened.
+
+💥 An exception is different
+Imagine you're reading a file:
+string text = File.ReadAllText("expenses.txt");
+Normally, C# reads the file and gives you its contents.
+But what if:
+
+expenses.txt DOESN'T EXIST 😭
+The method can't give you the expected file contents.
+Instead, it can throw an exception:
+
+FileNotFoundException
+Essentially:
+"I was supposed to give you the file contents, but something unexpected prevented me from doing that."
+Exceptions interrupt normal flow
+This is an important difference.
+With ordinary returns:
+
+int result = Add(5, 3);
+
+Console.WriteLine(result);
+Console.WriteLine("Done!");
+Everything proceeds normally:
+8
+Done!
+But an exception says:
+🚨 STOP. Something went wrong.
+For example:
+Console.WriteLine("Starting...");
+
+string text = File.ReadAllText("missing.txt");
+
+Console.WriteLine("Finished!");
+If the file doesn't exist, execution doesn't simply continue to "Finished!".
+The exception interrupts the normal flow.
+
+🧯 That's where try and catch come in
+You can tell C#:
+"Try doing this. If something goes wrong, I know how I want to handle it."
+try
+{
+    string text = File.ReadAllText("expenses.txt");
+    Console.WriteLine(text);
+}
+catch (FileNotFoundException)
+{
+    Console.WriteLine("I couldn't find the file!");
+}
+Read that almost literally:
+TRY
+ ↓
+"Try reading this file."
+
+       ↓
+Did it work?
+   /       \
+ YES        NO
+  ↓          ↓
+continue    CATCH
+             ↓
+       handle the problem
+Why not use exceptions for everything?
+Suppose you're asking a user:
+How old are you?
+> potato
+😂
+Is that possible?
+
+Absolutely. Users type invalid stuff all the time.
+
+So invalid input isn't necessarily exceptional. It's something your program can reasonably expect.
+
+You could do:
+
+try
+{
+    int age = int.Parse(input);
+}
+catch
+{
+    Console.WriteLine("That's not a valid age.");
+}
+But C# gives you a better tool for expected failure:
+if (int.TryParse(input, out int age))
+{
+    Console.WriteLine($"You are {age} years old.");
+}
+else
+{
+    Console.WriteLine("Please enter a number.");
+}
+TryParse essentially says:
+"It's totally normal that this might not work. I'll just return true or false to tell you what happened."
+That's different from an unexpected problem like:
+❌ File suddenly disappeared
+❌ Network connection failed
+❌ You don't have permission to access something
+❌ Database became unavailable
+Those are situations where exceptions make more sense.
+🧠 A good rule of thumb
+Think about a vending machine.
+You press B4 and receive your Coke:
+
+return coke;
+Normal result. ✅
+You press B4, but B4 is sold out:
+
+return null;
+Depending on how your program is designed, that's an expected possibility. ⚠️
+You press B4, and the vending machine bursts into flames:
+
+throw new VendingMachineOnFireException();
+Okay, we have left the normal program flow. 😂 🔥
+That's the distinction:
+
+Return values represent normal outcomes. Exceptions represent situations where the method can't complete normally.
+And then try/catch gives another part of your program a chance to say:
+"Okay, something went wrong. Here's what we'll do about it."
