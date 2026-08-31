@@ -1,0 +1,69 @@
+Introduction 
+
+Every Expense Tracker run so far has started empty and ended with nothing saved — close the program, and every expense you entered is gone. This reading fixes that by covering how to read and write files, save structured data as JSON, and do all of it asynchronously so the program doesn't freeze while waiting on the disk. By the end, the Expense Tracker will remember what you entered, even after you close it.
+
+File, StreamReader, StreamWriter 
+
+C# gives you two levels of control for working with files. The File class handles simple, one-shot operations — read everything, write everything, in a single call. StreamReader and StreamWriter give you finer control when you need to read or write line by line.
+
+csharp
+1234567891011121314151617181920
+// File class — simplest option, whole file at onceFile.WriteAllText("expenses.txt", "Coffee, 4.50, Food");string contents = File.ReadAllText("expenses.txt"); // StreamWriter — write line by line, useful inside a loopusing (StreamWriter writer = new StreamWriter("expenses.txt")){    writer.WriteLine("Coffee, 4.50, Food");    writer.WriteLine("Taxi, 18.00, Travel");} // StreamReader — read line by lineusing (StreamReader reader = new StreamReader("expenses.txt")){    string line;    while ((line = reader.ReadLine()) != null)    {        Console.WriteLine(line);    }}
+
+The using block matters here — it guarantees the file is properly closed and its resources released the moment the block ends, even if something inside throws an exception. Forgetting to close a file handle is a common source of "file is in use by another process" errors later on.  
+
+
+Reading and writing text files 
+
+A typical expense file is just lines of text, with each expense's data separated by some delimiter — a comma works fine for simple cases.  
+
+csharp
+12345678910111213141516171819202122232425262728
+List<Expense> expenses = new List<Expense>{    new Expense(4.50, "Food"),    new Expense(18.00, "Travel")}; // Writing each expense as one lineusing (StreamWriter writer = new StreamWriter("expenses.txt")){    foreach (var expense in expenses)    {        writer.WriteLine($"{expense.Amount},{expense.Category}");    }} // Reading and rebuilding the expenses from those linesList<Expense> loaded = new List<Expense>();using (StreamReader reader = new StreamReader("expenses.txt")){    string line;    while ((line = reader.ReadLine()) != null)    {        string[] parts = line.Split(',');        double amount = double.Parse(parts[0]);        string category = parts[1];        loaded.Add(new Expense(amount, category));    }}
+
+This works, but it's fragile — Split(',') breaks immediately if a category ever contains a comma, and every new property on Expense means rewriting both the saving and loading logic by hand. That fragility is exactly the problem JSON serialization solves.
+
+JSON serialization with System.Text.Json 
+
+Instead of manually formatting and parsing each line, System.Text.Json converts an entire object — or a whole list of them — directly to and from JSON text in a couple of calls
+
+csharp
+123456789101112131415
+using System.Text.Json; List<Expense> expenses = new List<Expense>{    new Expense(4.50, "Food"),    new Expense(18.00, "Travel")}; // Serialize — object to JSON textstring json = JsonSerializer.Serialize(expenses);File.WriteAllText("expenses.json", json); // Deserialize — JSON text back into real objectsstring loadedJson = File.ReadAllText("expenses.json");List<Expense> loaded = JsonSerializer.Deserialize<List<Expense>>(loadedJson);
+
+This is the approach the Expense Tracker will actually use going forward — Serialize and Deserialize handle every property automatically, including new ones you add later, without touching a single line of parsing code.  
+
+
+Blocking vs. non-blocking I/O 
+
+Reading or writing a file takes time — not much on a fast SSD, but real time nonetheless, and the program's main thread sits idle waiting for it unless told otherwise.  
+
+
+For a small console app reading one file, blocking I/O is barely noticeable. But the habit of writing non-blocking, asynchronous code from the start matters as soon as a program does more — handles a UI, talks to a network, or works with larger files — which is exactly why C# builds this pattern in as a first-class feature rather than an afterthought.
+
+async, await, Task, Task<T> 
+
+async and await are the keywords that let a method run asynchronously without you managing threads directly. A Task represents work that's running but not necessarily finished yet; Task<T> is the same idea, but the work eventually produces a value of type T.
+
+csharp
+12345678910
+// An async method that returns a value — note the Task<T> return typeasync Task<double> CalculateTotalAsync(List<Expense> expenses){    await Task.Delay(1000);   // simulates work that takes time    return expenses.Sum(e => e.Amount);} // Calling it — await pauses here without blocking the rest of the programdouble total = await CalculateTotalAsync(expenses);Console.WriteLine($"Total: ${total:F2}");
+
+await doesn't freeze the program while it waits — it hands control back until the awaited task finishes, then resumes exactly where it left off. An async method's return type is almost always Task (if it returns nothing) or Task<T> (if it returns a value) — never just void or T directly, since the method needs a way to represent "this is still running."  
+
+
+ Async file I/O methods 
+
+Most file operations in C# have an async counterpart, typically with Async added to the method name, paired with await.  
+
+csharp
+1234567891011121314151617
+// Async file writingasync Task SaveExpensesAsync(List<Expense> expenses){    string json = JsonSerializer.Serialize(expenses);    await File.WriteAllTextAsync("expenses.json", json);} // Async file readingasync Task<List<Expense>> LoadExpensesAsync(){    string json = await File.ReadAllTextAsync("expenses.json");    return JsonSerializer.Deserialize<List<Expense>>(json);} // Putting it togetherawait SaveExpensesAsync(expenses);List<Expense> loaded = await LoadExpensesAsync();
+
+This is the realistic shape file I/O takes in the Expense Tracker going forward: an async Task method wrapping the actual file call, awaited from wherever it's needed. The logic is nearly identical to the synchronous version from earlier in this reading — just with async, await, and Async added in the right places.
+
+Summary
+
+
+With file I/O and async programming in place, the Expense Tracker can finally save and reload real data between sessions — and do it without freezing while it works. Just one lesson remains: testing with xUnit, version control with Git, and bringing every piece built across this course together into the final capstone. 
+
