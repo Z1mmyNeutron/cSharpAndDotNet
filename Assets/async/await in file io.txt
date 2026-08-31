@@ -1,0 +1,138 @@
+This is the part where async/await starts to click. The important thing is:
+async and await let your program wait for something without forcing a thread to sit there doing nothing — while letting you write the code in a normal top-to-bottom style.
+🍕 Back to our pizza
+Without asynchronous programming, our worker does this:
+1. Put pizza in oven
+2. Stand there for 15 minutes 😐
+3. Take pizza out
+4. Give pizza to customer
+The problem is step 2. The worker is blocked.
+With asynchronous programming:
+1. Put pizza in oven
+2. Wait for pizza WITHOUT standing there
+3. 🔔 Pizza finishes
+4. Come back
+5. Give pizza to customer
+The worker can be freed up while the oven does its thing.
+So what does async do?
+You'll see methods like:
+async Task LoadExpensesAsync()
+{
+    // ...
+}
+async tells C#:
+"This method contains asynchronous work and may need to pause while waiting for something."
+You'll commonly see an asynchronous method return a Task:
+async Task DoSomethingAsync()
+or, if it eventually produces a value:
+async Task<string> GetSomethingAsync()
+You can think of a Task as representing:
+"Work that is happening or will finish later."
+And what does await do?
+This is the really important one.
+You wrote code like this in your expense tracker:
+string jsonData =
+    await File.ReadAllTextAsync("expenses.json");
+await basically says:
+"I need the result of this operation. If it's not finished yet, pause this method here. When it's finished, continue from this spot."
+So:
+Console.WriteLine("S
+Console.WriteLine("Starting");
+
+string jsonData =
+    await File.ReadAllTextAsync("expenses.json");
+
+Console.WriteLine("Finished");
+still reads naturally:
+Starting
+   ↓
+Read the file
+   ↓
+Wait for result
+   ↓
+Finished
+That's what people mean when they say asynchronous C# can look sequential.
+You don't have to write your code in some bizarre order.
+
+But something special happens at await
+Imagine:
+async Task LoadExpensesAsync()
+{
+    Console.WriteLine("A");
+
+    string json =
+        await File.ReadAllTextAsync("expenses.json");
+
+    Console.WriteLine("B");
+}
+C# reaches:
+await File.ReadAllTextAsync(...)
+If the file operation isn't finished, the method can essentially say:
+"Okay, I can't continue to B yet because I need that file. I'll pause here."
+LoadExpensesAsync()
+
+"A"
+ ↓
+Start reading file 💾
+ ↓
+AWAIT
+ ↓
+⏸️ Method pauses
+ ↓
+thread doesn't have to sit here waiting
+ ↓
+File finishes! 🔔
+ ↓
+▶️ Method continues
+ ↓
+"B"
+That's the magic.
+From your perspective, you wrote:
+
+do A
+↓
+await something
+↓
+do B
+Nice and sequential.
+But underneath, C# can pause your method while the asynchronous operation is incomplete.
+
+Why do we need BOTH async and await?
+Think of them as working together.
+async goes on the method:
+
+async Task LoadExpensesAsync()
+It says:
+"This method supports asynchronous operations."
+await goes on the operation you're waiting for:
+await File.ReadAllTextAsync(...)
+It says:
+"Pause this method until this particular asynchronous operation finishes."
+So:
+async Task LoadExpensesAsync()
+{
+    string json =
+        await File.ReadAllTextAsync("expenses.json");
+
+    Console.WriteLine(json);
+}
+can almost be read as English:
+"This is an asynchronous method. Start reading the file asynchronously, and wait for its result before continuing."
+🧠 The mental model I'd memorize
+Don't think:
+await = "BLOCK EVERYTHING AND WAIT."
+Think:
+await = "I can't continue this method until this finishes, so pause me and come back when it's ready."
+That's the key difference.
+And that's why this:
+
+string json =
+    await File.ReadAllTextAsync("expenses.json");
+looks almost exactly like normal sequential code even though the waiting is asynchronous.
+async → this method can perform asynchronous work.
+
+Task → represents work that may finish later.
+
+await → pause this method until that work is ready, without unnecessarily blocking a thread.
+
+And the code after await still runs afterward, which is why your code remains easy to read from top to bottom.

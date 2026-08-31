@@ -1,0 +1,123 @@
+This brings us to Testing, Version Control, and Application Assembly. Why are automated tests more reliable than manual verification as a program grows in complexity?
+Absolutely. Think about automated tests as having a robot whose entire job is to check your homework every single time you change it. 🤖
+Say your expense tracker starts tiny:
+
+Add Expense
+View Expenses
+You make a change and manually check:
+Add "Lunch", $25, "Food"
+Look at the result
+Yep, it works! ✅
+That's manageable.
+But then your application grows:
+
+Expense Tracker
+
+├── Add expenses
+├── Delete expenses
+├── Edit expenses
+├── Calculate totals
+├── Filter by category
+├── Save to JSON
+├── Load from JSON
+├── Handle missing files
+├── Handle bad JSON
+└── Validate user input
+Now imagine you change one little piece of code.
+How do you know you didn't accidentally break something else?
+
+You'd have to manually test everything again:
+
+Add expense          ✅
+Delete expense       ✅
+Edit expense         ✅
+Calculate total      ✅
+Save file            ✅
+Load file            ✅
+Bad input            ✅
+Missing file         ✅
+Invalid JSON         ✅
+...
+And then do that every time you change your code. 😭
+Humans eventually skip things, forget things, or test slightly differently.
+
+Automated tests do that work for you
+Suppose you have:
+decimal CalculateTotal(List<Expense> expenses)
+{
+    return expenses.Sum(e => e.Amount);
+}
+You could write an automated test that basically says:
+"If I give this method expenses of $25 and $40, I expect the answer to be $65."
+Something conceptually like:
+[Test]
+public void CalculateTotal_ReturnsCorrectTotal()
+{
+    var expenses = new List<Expense>
+    {
+        new("Lunch", 25, "Food"),
+        new("Taxi", 40, "Travel")
+    };
+
+    decimal result = CalculateTotal(expenses);
+
+    Assert.AreEqual(65, result);
+}
+Now the computer checks:
+Expected: $65
+Actual:   $65
+
+✅ PASS
+Later, you change CalculateTotal().
+Run your tests again:
+
+Expected: $65
+Actual:   $40
+
+❌ FAIL
+And you're like:
+"OH. I broke something."
+That's incredibly valuable.
+🧠 The biggest advantage: regression testing
+There's a word you'll hear a lot:
+Regression = something that used to work stops working after you change the program.
+
+Imagine:
+
+Monday:
+Saving expenses works. ✅
+
+Tuesday:
+You add a new feature.
+
+Suddenly:
+Saving expenses doesn't work. ❌
+An automated test can catch that immediately.
+So as your application gets bigger, your tests become a safety net:
+
+             Change some code
+                    ↓
+              Run all tests
+                    ↓
+          ┌─────────┴─────────┐
+          ↓                   ↓
+      All pass ✅         Something fails ❌
+          ↓                   ↓
+     Probably okay       Investigate before
+                          releasing the code
+Manual testing is still useful—you'll absolutely still open your application and try things yourself.
+But automated testing is more consistent and repeatable.
+
+The computer doesn't say:
+
+"I tested saving yesterday, I'm sure it's fine." 😂
+It runs the same checks every time.
+The simple answer to remember
+If your course asks:
+Why are automated tests more reliable as programs become complex?
+A good answer is:
+Automated tests can repeatedly and consistently verify many parts of a program after every change. As an application grows, manually checking every feature becomes slow and error-prone. Automated tests help catch bugs and regressions when new changes accidentally break existing functionality.
+Or, in our ELI5 language:
+Manual testing = "I think I checked everything."
+Automated testing = "Make the robot check everything again." 🤖✅
+
