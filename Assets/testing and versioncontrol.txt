@@ -1,0 +1,100 @@
+using Xunit;
+
+public class ExpenseTests
+{
+    [Fact]
+    public void CalculateTotal_ReturnsCorrectSum()
+    {
+        // Arrange — set up the data and conditions the test needs
+        double price = 4.50;
+        int quantity = 3;
+
+        // Act — run the actual code being tested
+        double result = price * quantity;
+
+        // Assert — check the result is what you expected
+        Assert.Equal(13.50, result);
+    }
+
+    [Theory]
+    [InlineData(4.50, 3, 13.50)]
+    [InlineData(10.00, 2, 20.00)]
+    public void CalculateTotal_HandlesMultipleCases(double price, int quantity, double expected)
+    {
+        double result = price * quantity;
+        Assert.Equal(expected, result);
+    }
+}
+
+
+git init                          # turns the current folder into a Git repository
+git add expenses.json             # stages a file to be included in the next commit
+git commit -m "Add JSON save and load"   # saves a snapshot with a message
+git branch feature/async-save     # creates a new branch
+git checkout feature/async-save   # switches to that branch
+
+
+Introduction 
+
+The Expense Tracker now does everything a real program should — it models data, validates it, handles failures, and saves to disk. This final reading covers two practices that separate a finished personal project from professional software: testing, which proves your code actually works (and keeps working as you change it), and version control, which protects your work and lets you track exactly how it evolved. It closes by tying every piece built across this course into the final capstone.
+
+Why testing matters 
+
+A test is code that checks other code. Without tests, you find out something broke when you happen to run the program and notice — or worse, when a user does. With tests, you find out the moment the bug is introduced, before it ever ships.
+
+
+This matters most as a program grows. A change to CalculateTotal in Lesson 2.1 might look safe in isolation, but if ten other methods depend on it, manual checking can't realistically cover every case — a test suite can, every time, automatically.
+
+xUnit: [Fact], [Theory], Assert, Arrange-Act-Assert 
+
+xUnit is the testing framework you'll use to write and run tests for the Expense Tracker. A [Fact] is a test that always checks the same single case. A [Theory] is a test that runs multiple times with different input data, supplied through [InlineData].
+
+csharp
+123456789101112131415161718192021222324252627
+using Xunit; public class ExpenseTests{    [Fact]    public void CalculateTotal_ReturnsCorrectSum()    {        // Arrange — set up the data and conditions the test needs        double price = 4.50;        int quantity = 3;         // Act — run the actual code being tested        double result = price * quantity;         // Assert — check the result is what you expected        Assert.Equal(13.50, result);    }     [Theory]    [InlineData(4.50, 3, 13.50)]    [InlineData(10.00, 2, 20.00)]    public void CalculateTotal_HandlesMultipleCases(double price, int quantity, double expected)    {        double result = price * quantity;        Assert.Equal(expected, result);    }}
+
+Arrange-Act-Assert is the structure nearly every test follows, in that order: set up what the test needs, run the one thing being tested, then check the outcome. Assert.Equal is the most common check, but xUnit also provides Assert.True, Assert.NotNull, Assert.Throws, and others for different kinds of expectations.  
+
+
+A test for the Expense Tracker might check that a negative amount throws NegativeAmountException, or that GroupBy correctly totals expenses by category — anything you'd otherwise verify by hand, written once and run automatically forever after.
+
+Git: repository, commit, branch, remote 
+
+Git tracks every change made to a project over time, letting you go back to any earlier point, and work on new features without risking what already works.
+
+
+12345
+git init                          # turns the current folder into a Git repositorygit add expenses.json             # stages a file to be included in the next commitgit commit -m "Add JSON save and load"   # saves a snapshot with a messagegit branch feature/async-save     # creates a new branchgit checkout feature/async-save   # switches to that branch
+
+ A commit isn't automatic — Git only saves what you explicitly add and commit, which is intentional. It lets you group related changes into one meaningful snapshot, rather than recording every keystroke as its own entry in the project's history.  
+
+
+GitHub: push, pull, clone 
+
+GitHub hosts a copy of your Git repository online, which is what makes a project shareable, backed up off your machine, and collaborative.  
+
+123
+git clone https://github.com/yourname/expense-tracker.git   # downloads an existing repogit push origin main                                        # uploads your local commits to GitHubgit pull origin main                                        # downloads the latest commits from GitHub
+
+clone is how you get a copy of a project that already exists on GitHub onto your own machine. push sends your local commits up to GitHub once you're ready to share them; pull brings down any commits made elsewhere — by you on another machine, or by a teammate — that you don't have locally yet. For the capstone, pushing your finished Expense Tracker to GitHub is what makes it an actual portfolio piece, visible and reviewable by anyone with the link.
+
+How the Expense Tracker ties the course together 
+
+Every lesson in this course added one layer to the same project, and the capstone is simply all of those layers working together at once.
+
+
+The Expense class from Lesson 2.2 is still the Expense class — now possibly a record per Lesson 3.1, validated through encapsulation, stored in a List<Expense> queried with LINQ, saved with JsonSerializer and async file I/O, and covered by an xUnit test suite that proves it all still works. Nothing from earlier modules gets discarded; the capstone is the accumulation of all nine lessons, not a separate project built from scratch.
+
+Summary
+
+
+That's the full course, end to end — from installing the SDK in Lesson 1.1 to a tested, version-controlled, persistent Expense Tracker here in Lesson 3.3. Every concept built on the one before it, and the Expense Tracker itself is the proof: a real, working program shaped by everything you've learned along the way.
+
+Mark as completed
+
+Like
+
+Dislike
+
+Report an issue
+
